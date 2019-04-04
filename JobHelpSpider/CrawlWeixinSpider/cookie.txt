@@ -1,0 +1,7 @@
+{"NTESSTUDYSI": "b628730caa2549dfa6d3a26588cbafdb",
+"__utma": "129633230.1984299952.1554192072.1554192072.1554192072.1",
+ "__utmc": "129633230",
+ "EDUWEBDEVICE": "2aa7d165cd1d45888dad9353d020ee5b",
+ "__utmz": "129633230.1554192072.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)",
+ "__utmb": "129633230.1.10.1554192072",
+ "utm": "eyJjIjoiIiwiY3QiOiIiLCJpIjoiIiwibSI6IiIsInMiOiIiLCJ0IjoiIn0=|aHR0cHM6Ly9zdHVkeS4xNjMuY29tL2NhdGVnb3J5LzQ4MDAwMDAwMzEyMTAwNS8="}

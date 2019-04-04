@@ -1,0 +1,737 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>桌面应用|如何从 Linux 上连接到远程桌面</title>
+
+    <meta name="keywords" content="如何从 Linux 上连接到远程桌面"/>
+    <meta name="description" content="Remmina 的极简用户界面使得远程访问 Linux / Windows 10 变得轻松。 "/>
+    <meta name="copyright" content="2005-2017 Linux.cn"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="applicable-device" content="pc,mobile">
+    <meta name="referrer" content="always">
+    <base href="https://linux.cn/"/>
+    <link rel="stylesheet" type="text/css" href="https://dn-linuxcn.qbox.me/data/cache/style_1_common.css?GGE"/>
+    <link rel="stylesheet" type="text/css" href="https://dn-linuxcn.qbox.me/data/cache/style_1_portal_view.css?GGE"/>
+    <link href="https://dn-linuxcn.qbox.me/static/css/responsive.css?GGE" rel="stylesheet">
+
+    <script type="text/javascript">var STYLEID = '1', STATICURL = 'https://dn-linuxcn.qbox.me/static/',
+        IMGDIR = 'https://dn-linuxcn.qbox.me/static/image/common', VERHASH = 'GGE', charset = 'utf-8', discuz_uid = '0',
+        cookiepre = 'dx_516d_', cookiedomain = '.linux.cn', cookiepath = '/', showusercard = '1', attackevasive = '0',
+        disallowfloat = '', creditnotice = '1|经验|,2|L币|,3|贡献|', defaultstyle = '',
+        REPORTURL = 'aHR0cDovL2xpbnV4LmNuL2FydGljbGUtMTA1NDItMS5odG1s', SITEURL = 'https://linux.cn/',
+        JSPATH = 'https://dn-linuxcn.qbox.me/static/js/', CSSPATH = 'data/cache/style_', DYNAMICURL = '';</script>
+    <script src="https://dn-linuxcn.qbox.me/static/js/common.js?GGE" type="text/javascript"></script>
+    <script src="https://dn-linuxcn.qbox.me/static/js/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <script type="text/javascript">jQuery.noConflict();</script>
+    <script src="https://dn-linuxcn.qbox.me/static/js/jquery.plugins.js?GGE" type="text/javascript"></script>
+    <script src="https://dn-linuxcn.qbox.me/static/js/bootstrap.min.js?GGE" type="text/javascript"></script>
+    <link rel="alternate" type="application/rss+xml" title="Linux中国开源社区 RSS" href="/rss.xml"/>
+    <link rel="shortcut icon" href="https://dn-linuxcn.qbox.me/favicon.ico" sizes="32x32"/>
+    <link rel="canonical" href="https://linux.cn/article-10542-1.html"/>
+    <script src="https://dn-linuxcn.qbox.me/static/js/portal.js?GGE" type="text/javascript"></script>
+</head>
+
+<body id="nv_portal" class="pg_view" onkeydown="if(event.keyCode==27) return false;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div id="hd">
+    <div class="wp" style="box-shadow: 1px 1px 2px #666;">
+        <h1 id="linuxcn_logo"><a href="https://linux.cn/" title="Linux.中国 - 开源社区"></a>
+            <style type="text/css">@-webkit-keyframes spin {
+                                       100% {
+                                           -webkit-transform: rotate(360deg);
+                                       }
+                                   }
+
+            @keyframes spin {
+                100% {
+                    transform: rotate(360deg);
+                }
+            }</style>
+        </h1>
+        <div class="p_pop h_pop" id="mn_userapp_menu" style="display: none"></div>
+        <div id="topmenu_wrapper">
+            <div id="topmenu">
+                <div id="nv">
+                    <ul>
+                        <li id="mn_N6666"><a href="/" hidefocus="true" style="font-weight: bold;">Linux 中国</a></li>
+                        <li id="mn_P3" onmouseover="navShow('P3')"><a href="https://linux.cn/tech/" hidefocus="true"
+                                                                      style="color: #FFFAE5;">技术</a></li>
+                        <li id="mn_P1"><a href="https://linux.cn/news/" hidefocus="true" style="color: #FFFAE5;">新闻</a>
+                        </li>
+                        <li id="mn_P4" onmouseover="navShow('P4')"><a href="https://linux.cn/talk/" hidefocus="true"
+                                                                      style="color: #FFFAE5;">观点</a></li>
+                        <li id="mn_P8" onmouseover="navShow('P8')"><a href="https://linux.cn/share/" hidefocus="true"
+                                                                      style="color: #FFFAE5;">分享</a></li>
+                        <li id="mn_N9be8" onmouseover="navShow('N9be8')"><a href="/forum/" hidefocus="true"
+                                                                            target="_blank" style="color: cyan;">论坛</a>
+                        </li>
+                        <li id="mn_N1fa1"><a href="/lctt/" hidefocus="true" target="_blank">LCTT</a></li>
+                        <li id="mn_Nb6ad"><a href="https://contribute.linux.cn/" hidefocus="true" target="_blank"
+                                             style="color: red;">投稿</a></li>
+                    </ul>
+                </div>
+                <div id="mu" class="cl">
+                    <ul class="cl " id="snav_mn_P3" style="display:none;">
+                        <li><a href="https://linux.cn/tech/desktop/" hidefocus="true">桌面应用</a></li>
+                        <li><a href="https://linux.cn/tech/sa/" hidefocus="true">系统运维</a></li>
+                        <li><a href="https://linux.cn/tech/program/" hidefocus="true">软件开发</a></li>
+                        <li><a href="https://linux.cn/tech/raspberrypi/" hidefocus="true">树莓派</a></li>
+                        <li><a href="https://linux.cn/tech/container/" hidefocus="true">容器与云</a></li>
+                    </ul>
+                    <ul class="cl " id="snav_mn_P4" style="display:none;">
+                        <li><a href="https://linux.cn/talk/comic/" hidefocus="true">极客漫画</a></li>
+                        <li><a href="https://linux.cn/talk/ossip/" hidefocus="true">开源智慧</a></li>
+                    </ul>
+                    <ul class="cl " id="snav_mn_P8" style="display:none;">
+                        <li><a href="https://linux.cn/share/distro/" hidefocus="true">Linux 发行版</a></li>
+                    </ul>
+                    <ul class="cl " id="snav_mn_N9be8" style="display:none;">
+                        <li><a href="/thread/" hidefocus="true" style="color: blue;">全部话题</a></li>
+                        <li><a href="javascript:showWindow('nav', 'forum.php?mod=misc&action=nav&special=0');"
+                               hidefocus="true" style="color: red;">发新帖</a></li>
+                        <li><a href="javascript:void();" hidefocus="true">|</a></li>
+                        <li><a href="/forum/news/" hidefocus="true">新闻杂谈</a></li>
+                        <li><a href="/forum/sa/" hidefocus="true">系统运维</a></li>
+                        <li><a href="/forum/program/" hidefocus="true">编程开发</a></li>
+                    </ul>
+                    <ul class="cl " id="snav_mn_N39f5" style="display:none;">
+                        <li><a href="/space.php" hidefocus="true">首页</a></li>
+                        <li><a href="/home.php?mod=space&do=home" hidefocus="true">动态</a></li>
+                        <li><a href="/home.php?mod=space&do=doing" hidefocus="true">记录</a></li>
+                        <li><a href="/home.php?mod=space&do=blog" hidefocus="true">博客</a></li>
+                        <li><a href="/home.php?mod=space&do=album" hidefocus="true">相册</a></li>
+                        <li><a href="/home.php?mod=space&do=favorite" hidefocus="true">收藏</a></li>
+                        <li><a href="/home.php?mod=space&do=friend" hidefocus="true">好友</a></li>
+                        <li><a href="/home.php?mod=spacecp&ac=invite" hidefocus="true">邀请</a></li>
+                    </ul>
+                    <ul class="cl " id="snav_mn_userapp" style="display:none;">
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="scbar" class="cl">
+            <form id="scbar_form" method="post" autocomplete="off" onsubmit="searchFocus($('scbar_txt'))"
+                  action="search.php?searchsubmit=yes" target="_blank">
+                <input type="hidden" name="mod" id="scbar_mod" value="search"/>
+                <input type="hidden" name="formhash" value="0d170711"/>
+                <input type="hidden" name="srchtype" value="title"/>
+                <input type="hidden" name="srhfid" value="0"/>
+                <input type="hidden" name="srhlocality" value="portal::view"/>
+                <table id="scbar_table" cellspacing="0" cellpadding="0" style="float:right;">
+                    <tr>
+                        <td class="scbar_icon_td"></td>
+                        <td class="scbar_txt_td"><input type="text" name="srchtxt" id="scbar_txt" value="请注册后再搜索"
+                                                        autocomplete="off" speech/></td>
+                        <td class="scbar_type_td"><a href="javascript:;" id="scbar_type" class="xg1"
+                                                     onclick="showMenu(this.id)" hidefocus="true">搜索</a></td>
+                        <td class="scbar_btn_td">
+                            <button type="submit" name="searchsubmit" id="scbar_btn" sc="1" class="pn pnc" value="true">
+                                <strong class="xi2">搜索</strong></button>
+                        </td>
+                        <td class="scbar_hot_td">
+                            <div id="scbar_hot">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <span class="z titletext" style="padding: 0 10px 0 20px;">❏ 站外平台：</span>
+            <ul id="ext_plantform" class="cl mutag z">
+                <li><a class="hidefocus tsina" hidefocus="true" href="https://weibo.com/linuxcn" target="_blank"
+                       title="微博认证号：Linux中国"></a></li>
+                <li><a class="hidefocus tticon" hidefocus="true" href="https://www.toutiao.com/c/user/52889878622/"
+                       target="_blank" title="今日头条：Linux中国"></a></li>
+                <li><a class="hidefocus tticon" hidefocus="true" href="http://www.toutiao.com/c/user/3357852467/"
+                       target="_blank" title="今日头条：Linux技术"></a></li>
+                <li><a class="hidefocus wyicon" hidefocus="true"
+                       href="http://dy.163.com/v2/article/detail/D282EJLD0511CPOJ.html" target="_blank"
+                       title="网易号：Linux"></a></li>
+                <li><a class="hidefocus fbicon" hidefocus="true" href="https://www.facebook.com/linux.china/"
+                       target="_blank" title="Facebook Page：Linux中国"></a></li>
+                <li><a class="hidefocus zhicon" hidefocus="true" href="https://www.zhihu.com/org/linuxzhong-guo/"
+                       target="_blank" title="知乎机构号：Linux中国"></a></li>
+                <li><a class="hidefocus twicon" hidefocus="true" href="https://twitter.com/linux_cn" target="_blank"
+                       title="Twitter：Linux中国"></a></li>
+                <li><a class="hidefocus tgicon" hidefocus="true" href="https://t.me/linuxdotcn" target="_blank"
+                       title="Telegram Channel：Linux中国"></a></li>
+            </ul>
+        </div>
+        <br class="clear"/>
+        <ul id="scbar_type_menu" class="p_pop" style="display: none;">
+            <li><a href="javascript:;" rel="search">全站</a></li>
+        </ul>
+        <script type="text/javascript">
+            initSearchmenu('scbar', '');
+        </script>
+        <script type="text/javascript">
+            (function ($) {
+                $(window).load(function () {
+                    $("#topmenu").affix({
+                        offset: {
+                            top: $("#topmenu").offset().top,
+                            bottom: 218
+                        }
+                    });
+                    $('#topmenu_wrapper').height($("#topmenu").height());
+                    $("#topmenu").on('affixed.bs.affix', function () {
+                        if ($('#linuxcn_logo').is(':visible')) {
+                            $('#mn_N6666').css({'display': 'block', 'width': '179px'});
+                            $('#mn_N6666 a').css({'padding': '0 45px'});
+                            $(this).css({'padding-left': 0, 'width': '1200px'});
+                        }
+                    });
+                    $("#topmenu").on('affixed-top.bs.affix', function () {
+                        if ($('#linuxcn_logo').is(':visible')) {
+                            $('#mn_N6666').css({'display': 'none'});
+                            $(this).css({'padding-left': '180px', 'width': '1020px'});
+                        }
+                    });
+                })
+            })(jQuery);
+        </script>
+
+    </div>
+</div>
+<div id="wp" class="wp">
+
+    <style type="text/css">
+        #nv_portal .vw .h.hm {
+            background: #FFF url(https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160121nf9iqddx3qdqv7sf.png);
+            border-radius: 0;
+            background-size: cover;
+            background-position: center;
+            height: 640px;
+            position: relative;
+            padding: 10px;
+            margin-bottom: 0;
+        }
+
+        #nv_portal .vw .h.hm h1 {
+            background-color: rgba(33, 33, 33, 0.8);
+            border-radius: 0;
+            position: absolute;
+            margin: 10px 20px 20px 20px;
+            padding: 15px 10px;
+            bottom: 0;
+            width: 90%;
+        }
+
+        #nv_portal .vw .d table {
+            margin: 0;
+        }
+    </style>
+    <div id="ct" class="ct2 wp cl">
+        <div class="mn">
+            <article class="vw">
+                <div class="h hm bm" style="margin-top: 0;">
+                    <h1 class="ph" id="article_title">如何从 Linux 上连接到远程桌面 </h1>
+                    <div class="ph" id="article_copyright">
+<span>作者： 
+    	 
+    		    			<span class="textcut"><a href="https://opensource.com/article/18/6/linux-remote-desktop"
+                                                     target="_blank">Kedar Vijay Kulkarni</a></span>
+    		    	    	<span>译者： 
+<a href="https://linux.cn/lctt/" target=_blank>LCTT</a>&nbsp;<a href="/lctt/tomjlw"
+                                                                target="_blank">Liwen Jiang</a></span>
+<p id="article_date">
+| 2019-02-16 16:01&nbsp;&nbsp;
+评论: <a href="portal.php?mod=comment&id=10542&idtype=aid" title="查看全部评论"><em id="_commentnum">1</em></a>&nbsp;&nbsp;&nbsp;&nbsp;
+</p>
+                    </div>
+                </div>
+
+                <div class="d" style="width: 100%;margin: 0;">
+                    <div id="article_content" style="border-radius:0;">
+                        <blockquote>
+                            <p>Remmina 的极简用户界面使得远程访问 Linux / Windows 10 变得轻松。</p>
+                        </blockquote>
+
+                        <p>根据维基百科，<a href="https://en.wikipedia.org/wiki/Remote_desktop_software">远程桌面</a> 是一种&ldquo;软件或者操作系统特性，它可以让个人电脑上的桌面环境在一个系统（通常是电脑，但是也可以是服务器）上远程运行，但在另一个分开的客户端设备显示&rdquo;。
+                        </p>
+                        <p>换句话说，远程桌面是用来访问在另一台电脑上运行的环境的。比如说 <a href="https://github.com/ManageIQ/integration_tests">ManageIQ/Integration
+                            tests</a> 仓库的拉取请求 (PR) 测试系统开放了一个虚拟网络计算 (VNC)
+                            连接端口，使得我能够远程浏览正被实时测试的拉取请求。远程桌面也被用于帮助客户解决电脑问题：在客户的许可下，你可以远程建立 VNC
+                            或者远程桌面协议（RDP）连接来查看或者交互式地访问该电脑以寻找并解决问题。</p>
+                        <p>运用远程桌面连接软件可以建立这些连接。可供选择的软件有很多，我用 <a href="https://www.remmina.org/wp/">Remmina</a>，因为我喜欢它极简、好用的用户界面
+                            (UI)。它是用 GTK+ 编写的，在 GNU GPL 许可证开源。</p>
+                        <p>在这篇文章里，我会解释如何使用 Remmina 客户端从一台 Linux 电脑上远程连接到 Windows 10 系统 和 Red Hat 企业版 Linux 7 系统。</p>
+                        <h3 id="toc_1">在 Linux 上安装 Remmina</h3>
+                        <p>首先，你需要在你用来远程访问其它电脑的的主机上安装 Remmina。如果你用的是 Fedora，你可以运行如下的命令来安装 Remmina：</p>
+                        <pre class="prettyprint linenums"><code>sudo dnf install -y remmina</code></pre>
+                        <p>如果你想在一个不同的 Linux 平台上安装 Remmina，跟着 <a
+                                href="https://www.tecmint.com/remmina-remote-desktop-sharing-and-ssh-client/">安装教程</a>
+                            走。然后你会发现 Remmina 正和你其它软件出现在一起（在这张图片里选中了 Remmina）。</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160139hkltc0ssspl008s8.png"
+                                 alt=""/></p>
+                        <p>点击图标运行 Remmina，你应该能看到像这样的屏幕：</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160141p7mo030b1hhmj1nd.png"
+                                 alt=""/></p>
+                        <p>Remmina 提供不同种类的连接，其中包括用来连接到 Windows 系统的 RDP 和用来连接到 Linux 系统的 VNC。如你在上图左上角所见的，Remmina 的默认设置是
+                            RDP。</p>
+                        <h3 id="toc_2">连接到 Windows 10</h3>
+                        <p>在你通过 RDP 连接到一台 Windows 10 电脑之前，你必须修改权限以允许分享远程桌面并通过防火墙建立连接。</p>
+                        <ul>
+                            <li>
+                                <a href="https://superuser.com/questions/1019203/remote-desktop-settings-missing#1019212">注意:
+                                    Windows 10 家庭版没有列入 RDP 特性</a></li>
+                        </ul>
+                        <p>要许可远程桌面分享，在&ldquo;文件管理器&rdquo;界面右击&ldquo;我的电脑 &rarr; 属性 &rarr; 远程设置&rdquo;，接着在跳出的窗口中，勾选&ldquo;在这台电脑上允许远程连接&rdquo;，再点击&ldquo;应用&rdquo;。</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160149y9aaxx7xruof7hge.png"
+                                 alt=""/></p>
+                        <p>然后，允许远程连接通过你的防火墙。首先在&ldquo;开始菜单&rdquo;中查找&ldquo;防火墙设置&rdquo;，选择&ldquo;允许应用通过防火墙&rdquo;。</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160154ct91zakd3v7javjd.png"
+                                 alt=""/></p>
+                        <p>在打开的窗口中，在&ldquo;允许的应用和特性&rdquo;下找到&ldquo;远程桌面&rdquo;。根据你用来访问这个桌面的网络酌情勾选&ldquo;隐私&rdquo;和/或&ldquo;公开&rdquo;列的选框。点击&ldquo;确定&rdquo;。</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160159jzzpqqz14qqkoyll.png"
+                                 alt=""/></p>
+                        <p>回到你用来远程访问 Windows 主机的 Linux 电脑，打开 Remmina。输入你的 Windows 主机的 IP 地址，敲击回车键。（我怎么在 <a
+                                href="https://opensource.com/article/18/5/how-find-ip-address-linux">Linux</a> 和 <a
+                                href="https://www.groovypost.com/howto/find-windows-10-device-ip-address/">Windws</a>
+                            中确定我的 IP 地址？）看到提示后，输入你的用户名和密码，点击&ldquo;确定&rdquo;。</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160204llyvh2h4lh4how28.png"
+                                 alt=""/></p>
+                        <p>如果你被询问是否接受证书，点击&ldquo;确定&rdquo;。</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160207pb7ppa442avoe3ob.png"
+                                 alt=""/></p>
+                        <p>你此时应能看到你的 Windows 10 主机桌面。</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160208zn0728se8c8ad7a7.png"
+                                 alt=""/></p>
+                        <h3 id="toc_3">连接到 Red Hat 企业版 Linux 7</h3>
+                        <p>要在你的 RHEL7 电脑上允许远程访问，在 Linux 桌面上打开&ldquo;所有设置&rdquo;。</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160215f9nm4nw9nbaahpeh.png"
+                                 alt=""/></p>
+                        <p>点击分享图标会打开如下的窗口：</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160217ed32r4nbw9wbd9w0.png"
+                                 alt=""/></p>
+                        <p>如果&ldquo;屏幕分享&rdquo;处于关闭状态，点击一下。一个窗口会弹出，你可以滑动到&ldquo;打开&rdquo;的位置。如果你想允许远程控制桌面，将&ldquo;允许远程控制&rdquo;调到&ldquo;打开&rdquo;。你同样也可以在两种访问选项间选择：一个能够让电脑的主要用户接受或者否绝连接要求，另一个能用密码验证连接。在窗口底部，选择被允许连接的网络界面，最后关闭窗口。</p>
+                        <p>接着，从&ldquo;应用菜单 &rarr; 其它 &rarr; 防火墙&rdquo;打开&ldquo;防火墙设置&rdquo;。</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160219ev4kvvbmp73plxm3.png"
+                                 alt=""/></p>
+                        <p>勾选 &ldquo;vnc-server&rdquo;旁边的选框（如下图所示）关闭窗口。接着直接到你远程电脑上的 Remmina，输入你想连接到的 Linux 桌面的 IP 地址，选择
+                            VNC 作为协议，点击回车键。</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160226iwd2r5wugn703qwd.png"
+                                 alt=""/></p>
+                        <p>如果你之前选择的验证选项是&ldquo;新连接必须询问访问许可&rdquo;，RHEL 系统用户会看到这样的一个弹窗：</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160229wkgpdsrlk4gbykkz.png"
+                                 alt=""/></p>
+                        <p>点击&ldquo;接受&rdquo;以成功进行远程连接。</p>
+                        <p>如果你选择用密码验证连接，Remmina 会向你询问密码。</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160232vvv6z26xx69e662b.png"
+                                 alt=""/></p>
+                        <p>输入密码然后&ldquo;确认&rdquo;，你应该能连接到远程电脑。</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160239eb1ph1e2dy1ihdwb.png"
+                                 alt=""/></p>
+                        <h3 id="toc_4">使用 Remmina</h3>
+                        <p>Remmina 提供如上图所示的标签化的 UI，就好像一个浏览器一样。在上图所示的左上角你可以看到两个标签：一个是之前建立的 WIndows 10 连接，另一个新的是 RHEL
+                            连接。</p>
+                        <p>在窗口的左侧，有一个有着&ldquo;缩放窗口&rdquo;、&ldquo;全屏模式&rdquo;、&ldquo;偏好&rdquo;、&ldquo;截屏&rdquo;、&ldquo;断开连接&rdquo;等选项的工具栏。你可以自己探索看那种适合你。</p>
+                        <p>你也可以通过点击左上角的&ldquo;+&rdquo;号创建保存过的连接。根据你的连接情况填好表单点击&ldquo;保存&rdquo;。以下是一个 Windows 10 RDP
+                            连接的示例：</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160243tgoopvohnohogfjn.png"
+                                 alt=""/></p>
+                        <p>下次你打开 Remmina 时连接就在那了。</p>
+                        <p>
+                            <img src="https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160244h022xd6n6l773lo6.png"
+                                 alt=""/></p>
+                        <p>点击一下它，你不用补充细节就可以建立连接了。</p>
+                        <h3 id="toc_5">补充说明</h3>
+                        <p>当你使用远程桌面软件时，你所有的操作都在远程桌面上消耗资源 &mdash;&mdash; Remmina（或者其它类似软件）仅仅是一种与远程桌面交互的方式。你也可以通过 SSH
+                            远程访问一台电脑，但那将会让你在那台电脑上局限于仅能使用文字的终端。</p>
+                        <p>
+                            你也应当注意到当你允许你的电脑远程连接时，如果一名攻击者用这种方法获得你电脑的访问权同样会给你带来严重损失。因此当你不频繁使用远程桌面时，禁止远程桌面连接以及其在防火墙中相关的服务是很明智的做法。</p>
+                        <hr/>
+                        <p>via: <a href="https://opensource.com/article/18/6/linux-remote-desktop">https://opensource.com/article/18/6/linux-remote-desktop</a>
+                        </p>
+                        <p>作者：<a href="https://opensource.com/users/kkulkarn">Kedar Vijay Kulkarni</a> 选题：<a
+                                href="https://github.com/lujun9972">lujun9972</a> 译者：<a
+                                href="https://github.com/tomjlw">tomjlw</a> 校对：<a href="https://github.com/wxy">wxy</a>
+                        </p>
+                        <p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a
+                                href="https://linux.cn/">Linux中国</a> 荣誉推出</p></div>
+                </div>
+                <br class="clear"/>
+                <div class="vw">
+                    <div id="add_comment" class="h bm" style="display: none;">
+                        <div class="bm_h cl">
+                            <h3>发表评论</h3>
+                        </div>
+                        <div class="bm_c pbn">
+                            <form id="cform" name="cform" action="portal.php?mod=portalcp&ac=comment" method="post"
+                                  autocomplete="off">
+                                <div class="tedt">
+                                    <div class="area">
+                                        <textarea name="message" rows="10" class="pt" id="message"
+                                                  onkeydown="ctrlEnter(event, 'commentsubmit_btn');"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="mtm z"><span id="seccode_cSbAa1F0"></span>
+                                    <script type="text/javascript"
+                                            reload="1">updateseccode('cSbAa1F0', '<sec> <span id="sec<hash>" onclick="showMenu(this.id);"><sec></span><div id="sec<hash>_menu" class="p_pop p_opt" style="display:none"><sec></div>', 'portal::view');</script>
+                                    <script type="text/javascript">
+                                        (function ($) {
+                                            $("#cform").submit(function (e) {
+                                                if ($("#checksec_none_cSbAa1F0").length > 0) {
+                                                    alert("请输入验证码");
+                                                    return false;
+                                                } else if ($("#checksec_error_cSbAa1F0").length > 0) {
+                                                    alert("验证码输入错误，请重新输入");
+                                                    return false;
+                                                } else if ($("#checksec_loading_cSbAa1F0").length > 0) {
+                                                    alert("验证码验证中……");
+                                                    return false;
+                                                }
+                                            });
+                                        })(jQuery);
+                                    </script>
+                                </div>
+                                <input type="hidden" name="portal_referer"
+                                       value="https://linux.cn/article-10542-1.html#comment">
+                                <input type="hidden" name="referer"
+                                       value="https://linux.cn/article-10542-1.html#comment"/>
+                                <input type="hidden" name="id" value="0"/>
+                                <input type="hidden" name="idtype" value=""/>
+                                <input type="hidden" name="aid" value="10542">
+                                <input id="reppid" type="hidden" name="reppid" value="">
+                                <input type="hidden" name="formhash" value="0d170711">
+                                <input type="hidden" name="replysubmit" value="true">
+                                <input type="hidden" name="commentsubmit" value="true"/>
+                                <p class="mtm" style="text-align: center;">
+                                    <button type="submit" name="commentsubmit_btn" id="commentsubmit_btn" value="true"
+                                            class="pn"><strong>评论</strong></button>
+                                </p>
+                                <br class="clear"/>
+                            </form>
+                        </div>
+                    </div>
+                    <div id="comment" class="bm h">
+                        <div class="bm_h cl">
+                            <h3 class="z"><a name="comment"></a>最新评论</h3>
+                        </div>
+                        <div id="comment_ul" class="bm_c">
+                            <div style="text-align: center;">
+                                <button type="button" class="pnc" style="font-size: 24px;width: 160px;" id="c_add"
+                                        onclick="showWindow(this.id, 'portal.php?mod=portalcp&ac=comment&op=new&aid=10542', 'get', 0);">
+                                    <strong>发表评论</strong></button>
+                            </div>
+                            <a name="comment_anchor_47011"></a>
+                            <dl id="comment_47011_li" class="pbm bbda cl">
+                                <dt class="mbm  s1">
+                                    <span class=" xw0 vm">来自江苏南京的 Chrome 72.0|GNU/Linux 用户</span>
+                                    <span class=" xw0 vm">2019-02-16 17:36</span>
+                                    <span class="y xw0 xi2 opt" style="margin-right: 5px;">
+<a class="replyadd"
+   href="portal.php?mod=review&amp;action=postreview&amp;do=support&amp;idtype=aid&amp;tid=10542&amp;pid=47011&amp;hash=0d170711"
+   onclick="ajaxmenu(this, 3000, 0, 0, '43', '');return false;"><span id="review_support_47011">2</span> 赞</a>
+                                        <!--<a href="javascript:;" onclick="portal_comment_reppost(47011, '10542');">回复</a> --><a
+                                            id="reply_47011" onclick="showWindow('comment', this.href, 'get', 0);"
+                                            href="portal.php?mod=portalcp&amp;ac=comment&amp;op=reply&amp;cid=47011&amp;aid=10542&amp;idtype=">回复</a> </span>
+                                </dt>
+                                <dd>
+                                    好文章，非常感谢，谢谢你们的努力。
+                                </dd>
+                            </dl>
+                            <div class="ptm pbm cl">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="h bm_c bm z" id="footer_info">
+                    <p class="copyright">
+
+                        <span class="z textcut">译自：<a href="https://opensource.com/article/18/6/linux-remote-desktop"
+                                                      target="_blank">opensource.com</a></span>
+                        <span class="y">作者： Kedar Vijay Kulkarni</span> <br class="clear"/>
+                        <span class="z">原创：<a href="https://linux.cn/lctt/" target=_blank>LCTT</a> <a
+                                href="https://linux.cn/article-10542-1.html" target="_blank">https://linux.cn/article-10542-1.html</a></span>
+                        <span class="y">译者： Liwen Jiang</span> <br class="clear"/>
+                        <br/>
+                        <span>本文由 LCTT 原创翻译，<a href="https://linux.cn/article-10542-1.html">Linux中国首发</a>。也想加入译者行列，为开源做一些自己的贡献么？欢迎加入 <a
+                                href="http://lctt.github.io/" target=_blank>LCTT</a>！<br/>翻译工作和译文发表仅用于学习和交流目的，翻译工作遵照 <a
+                                href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target=_blank>CC-BY-NC-SA 协议规定</a>，如果我们的工作有侵犯到您的权益，请及时联系我们。</span>
+                        <br class="clear"/>
+                        <span style="color:red;">欢迎遵照 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh"
+                                                         target=_blank>CC-BY-NC-SA 协议规定</a>转载，敬请在正文中标注并保留原文/译文链接和作者/译者等信息。</span>
+                        <br class="clear"/>
+                        <span>文章仅代表作者的知识和看法，如有不同观点，请楼下排队<a href="javascript:void(0);"
+                                                           onclick="$('message').focus();">吐槽</a> :D</span>
+                        <br class="clear"/>
+                    </p>
+
+
+                    <div class="o cl ptm pbm">
+                        <a href="home.php?mod=spacecp&amp;ac=favorite&amp;type=article&amp;id=10542&amp;handlekey=favoritearticlehk_10542"
+                           id="a_favorite" onclick="showWindow(this.id, this.href, 'get', 0);" class="favorite z"
+                           title="收藏"></a>
+                        <!-- <a href="misc.php?mod=invite&amp;action=article&amp;id=10542" id="a_invite" onclick="showWindow('invite', this.href, 'get', 0);" class="invite z" title="邀请"></a> -->
+                        <a href="https://linux.cn/article-10542-1.html?pr" class="print z" title="打印"></a>
+
+                    </div>
+                    <div class="pren pbm cl">
+                        <em>上一篇：<a href="https://linux.cn/article-10381-1.html">以 Linux 的方式庆祝圣诞节</a></em></div>
+                </div>
+                <div>
+                    <div id="translator_info" class="bm"
+                         style="position: relative;margin: 8px 4px 8px 0 !important;float: right;">
+                        <div class="bm_h cl">
+                            LCTT 译者
+                        </div>
+                        <div class="bm_c">
+                            <div>
+                                <a href="/lctt/tomjlw" target="_blank"><img class="avatar"
+                                                                            src="https://avatars2.githubusercontent.com/u/17523576?v=4"
+                                                                            style="max-width: 64px; float: left;margin-top: 10px;"/></a>
+                                <div style="float: left;margin-left: 10px;font-size: 12px;line-height: 1.5em; ">
+                                    <div>
+                                        <a href="https://github.com/tomjlw" target="_blank"><img
+                                                src="https://dn-linuxcn.qbox.me/static/image/common/github_icon.png"
+                                                style="vertical-align:middle;"/></a> <a href="/lctt/tomjlw"
+                                                                                        target="_blank"
+                                                                                        style="font-weight: bold;">Liwen
+                                        Jiang</a> 🌟🌟
+                                    </div>
+                                    <div class="addfiles">共计翻译： <span class="num" style="color: #f00;font-weight: 700;">3.0</span>
+                                        篇
+                                        | 共计贡献： <span class="num" style="color: #f00;font-weight: 700;">14</span> 天
+                                    </div>
+                                    <div>贡献时间：2019-02-03 -&gt; 2019-02-16</div>
+                                    <a href="/lctt/tomjlw" target="_blank">访问我的 LCTT 主页</a> | <a
+                                        href="https://github.com/tomjlw" target="_blank">在 GitHub 上关注我</a>
+                                </div>
+                                <br class="clear"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="related" class="bm block z">
+                    <div class="bm_h cl">
+                        <h3>相关阅读</h3>
+                    </div>
+                    <div class="bm_c pbn" id="related_tag">
+                        <ul class="xl xl2 cl bbs pbm" id="tag">
+                            <li><a href="tag-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2.html">远程桌面</a></li>
+                        </ul>
+                    </div>
+                    <div class="bm_c xl xl1 cl" id="related_article">
+                        <ul>
+                            <li><em>2013-03-13</em><a href="article-1028-1-rel.html" target="_blank">移动办公
+                                如何在Ubuntu中使用远程桌面？</a></li>
+                            <li><em>2013-12-14</em><a href="article-2374-1-rel.html" target="_blank">每日Ubuntu小技巧 -
+                                使用TeamViewer连接远程桌面</a></li>
+                            <li><em>2015-05-17</em><a href="article-5454-1-rel.html" target="_blank">Linux有问必答：如何在VPS上安装和访问CentOS
+                                7远程桌面</a></li>
+                            <li><em>2015-06-29</em><a href="article-5708-1-rel.html" target="_blank">如何在 Linux 上使用 x2go
+                                设置远程桌面</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <br class="clear"/>
+            </article>
+        </div>
+
+    </div>
+
+
+    <input type="hidden" id="portalview" value="1">
+
+    <script type="text/javascript">
+        (function ($) {
+            $(window).load(function () {
+
+// 文章内插图及注释
+
+                var max_width = $("#article_content").width() - 60;
+                var imgp = $("#article_content IMG").parents("P");
+                imgp.each(function () {
+                    $(this).addClass("article_img");
+                    var img = $(this).find("IMG");
+                    if (img.parent("A").is("A")) {
+                        img.unwrap();
+                    }
+// 如果有图片描述
+                    var desc = null;
+                    if ((desc = $(this).next("P")) && desc && desc.contents() && desc.contents().first().is("EM")) {
+                        desc.addClass("article_img_desc");
+                        desc_txt = desc.contents().first().text();
+                        img.attr({"title": desc_txt, "alt": desc_txt});
+                    } else if ((desc = img.next("BR").next("EM")) && desc.text()) {
+                        var desc_txt = desc.text();
+                        img.next("BR").remove();
+                        img.next("EM").remove();
+                        $(this).after("<p class='article_img_desc'><em>" + desc_txt + "</em></p>");
+                    } else {
+                        var desc_txt = img.attr("alt") || img.attr("title");
+                        if (desc_txt != '' && typeof desc_txt != 'undefined') {
+                            $(this).after("<p class='article_img_desc'><em>" + desc_txt + "</em></p>");
+                        }
+                    }
+                    if (img.attr("width") > max_width) {
+                        img.attr("width", '');
+                        img.attr("height", '');
+                        img.css("cursor", "pointer");
+                        img.click(function () {
+                            window.open(img.attr("src"));
+                        });
+                    } else if (img.width() > max_width) {
+                        img.css("height", parseInt(img.height() * (max_width / img.attr("width"))));
+                        img.css("width", max_width);
+                        img.css("cursor", "pointer");
+                        img.click(function () {
+                            window.open(img.attr("src"));
+                        });
+                    }
+                });
+
+                var pre = $("#article_content PRE");
+                pre.each(function () {
+// 如果有代码描述
+                    var desc = null;
+                    if ((desc = $(this).next("P")) && desc && desc.contents() && desc.contents().first().is("EM")) {
+                        desc.addClass("article_img_desc");
+                        desc_txt = desc.contents().first().text();
+                    }
+                });
+
+// 链接
+                var re_sitelink = /^https?:\/\/(www.)?linux(.net)?.cn\//i;
+                $("#article_content a").map(function () {
+                    if ($(this).attr('href') == undefined) {
+                        $(this).css({'visibility': 'hidden'});
+                    } else if ($(this).attr('href').substr(0, 1) == '#') {
+                        $(this).attr('href', 'https://linux.cn/article-10542-1.html' + $(this).attr('href'));
+                    }
+                    if (re_sitelink.test($(this).attr('href'))) {
+                        if ($(this).text() == 'Linux中国') $(this).attr('href', $(location).attr('href'));
+                    } else {
+                        $(this).addClass("ext").attr({"rel": "external nofollow", "target": "_blank"});
+                    }
+                });
+
+// 视频
+                $("video").map(function () {
+                    width = $(this).attr("width");
+                    height = $(this).attr("height");
+                    $(this).wrap("<div class='videoContainer'></div>").parent()
+                        .css({width: width, height: height});
+                });
+                $("#article_content table").wrap("<section class='bm'><section style='white-space:nowrap;overflow:scroll;'></section></section>")
+                    .parent().parent().prepend("<section class='hm bm_h'>&lt; 如显示不全，请左右滑动 &gt;</section>")
+                    .append("<section class='hm bm_f'></section>");
+                $("#article_content table td").map(function () {
+                    var c = $(this).text();
+                    if (c.length > 20) $(this).css("white-space", "normal");
+
+                });
+            })
+        })(jQuery);
+    </script>
+    <link rel="stylesheet" href="https://dn-linuxcn.qbox.me/static/js/prettify/prettify.css?GGE" type="text/css"/>
+    <script src="https://dn-linuxcn.qbox.me/static/js/prettify/prettify.min.js?GGE" type="text/javascript"></script>
+    <script type="text/javascript">
+        var sourceBaseUrl = "https://dn-linuxcn.qbox.me/static/js/tinymce/plugins/prettify";
+        prettyPrint();
+    </script>
+</div>
+<div id="footer">
+    <p>
+        <span>Linux.CN &copy; 2003 →→→  Linux中国</span>
+        <span class="line">|</span>
+        <span>Powered by <strong>DX</strong> | 图片存储于<a href="http://www.qiniu.com/" target="_blank">七牛云</a></span>
+    </p>
+    <p>
+        <a href="http://www.miitbeian.gov.cn/" target="_blank">京ICP备05083684号-1</a> 京公网安备110105001595
+    </p>
+    <p>
+        <a href="https://linux.cn/legal.html">服务条款</a> |
+        除特别申明外，本站原创内容版权遵循 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.zh" target="_blank">CC-BY-NC-SA
+        协议规定</a></p>
+    <p>
+        <a href="https://linux.cn/"><img src="https://dn-linuxcn.qbox.me/static/image/common/linuxcn_logo_mini.png"
+                                         align="absmiddle"/></a>
+        <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank"><img
+                src="https://dn-linuxcn.qbox.me/static/image/common/cc.png" align="absmiddle"/></a>
+    </p>
+    <p>
+    </p>
+</div>
+
+<div id="ft" class="cl"></div>
+<script src="home.php?mod=misc&ac=sendmail&rand=1550398306" type="text/javascript"></script>
+<div id="scrolltop">
+<span>
+<a href="javascript:void();" class="wxicon"
+   onmouseover="show_qrcode(event,'#qrcode', SITEURL + 'article-10542-1.html?utm_source=weixin');"
+   onmouseout="show_qrcode(event,'#qrcode','');"></a>
+<a title="分享到微博"
+   href="javascript:void( share_tsina(SITEURL + 'article-10542-1.html?utm_source=weibo','article_title','article_content','https://dn-linuxcn.qbox.me/data/attachment/album/201902/16/160121nf9iqddx3qdqv7sf.png') );"
+   class="tsina"></a>
+<a title="收藏"
+   href="home.php?mod=spacecp&amp;ac=favorite&amp;type=article&amp;id=10542&amp;handlekey=favoritearticlehk_10542"
+   id="a_favorite" onclick="showWindow(this.id, this.href, 'get', 0);" class="favorite" title="收藏"></a>
+    	<a href="article-10542-1.html?pr" class="print" title="!print!"></a>
+
+</span>
+    <span hidefocus="true"><a title="返回顶部" onclick="window.scrollTo('0','0')" class="scrolltopa"><b>返回顶部</b></a></span>
+</div>
+<script type="text/javascript">_attachEvent(window, 'scroll', function () {
+    showTopLink();
+});</script>
+<div id="qrcode">
+    <p>分享到微信</p>
+    <div id="canvas"></div>
+    <p><em>打开微信，点击顶部的“╋”，<br/>
+        使用“扫一扫”将网页分享至微信。</em></p></div>
+<script src="https://dn-linuxcn.qbox.me/static/js/ads.js?GGE" type="text/javascript"></script>
+<div id="LGGECisOsS"
+     style="display: none; background-color: #A00; position: fixed; top: 0; width: 100%; z-index: 9999; left: 0; font-size: 16px; color: #fff; text-align: center; padding: 10px; opacity: 0.8;">
+    请将我们加入您的广告过滤器的白名单，请支持开源站点。谢谢您。
+</div>
+<script type="text/javascript">
+    (function ($) {
+        $(window).load(function () {
+            if ($('#pleaseRemoveOurSiteFromBlackList').length == 0 && $(window).width() >= 480) {
+                $('#LGGECisOsS').css('display', 'block');
+            }
+            if (location.href.substr(0, 17) != 'https://linux.cn/') {
+                location.href = 'https://linux.cn/';
+            }
+
+            function roundTopFocus() {
+                if ($('.topfocus').length) {
+//var tf1 = $('.topfocus').children().first();
+//$('.topfocus').children().fadeOut('fast',function(){tf1.remove().appendTo($('.topfocus')).fadeIn()}).fadeIn();
+                } else if ($('.article_titlead').length) {
+                    var ad1 = $('.article_titlead').children().first();
+                    $('.article_titlead').children().fadeOut('slow', function () {
+                        ad1.remove().appendTo($('.article_titlead')).fadeIn()
+                    }).fadeIn();
+
+                }
+            }
+
+            setInterval(roundTopFocus, 10000);
+        });
+    })(jQuery);
+</script>
+</body>
+</html>
