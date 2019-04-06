@@ -19,7 +19,7 @@ NEWSPIDER_MODULE = 'PositionSpider.spiders'
 #USER_AGENT = 'PositionSpider (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -52,9 +52,13 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'PositionSpider.middlewares.PositionspiderDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+   # 'PositionSpider.middlewares.PositionspiderDownloaderMiddleware': 543,
+
+    # 设置随机用户代理，必须先将scrapy原先的用户代理中间件去掉
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+    'PositionSpider.middlewares.RandomUserAgentMiddleWare': 1
+}
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
@@ -88,3 +92,13 @@ ROBOTSTXT_OBEY = True
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+MYSQL_HOST = '60.205.224.136'
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = '123456'
+MYSQL_DB = 'search_engine'
+
+
+# 本地的chromedriver路径
+CHROMEDRIVER_PATH = '/Users/hanyuzhou/Downloads/chromedriver'
+# 阿里云服务器的chromedriver路径
+CHROMEDRIVER_PATH = '/home/yuzhou/software/chromedriver'

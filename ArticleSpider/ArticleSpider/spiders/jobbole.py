@@ -109,7 +109,7 @@ class JobboleSpider(scrapy.Spider):
         jobbole_article_item['url'] = url
         jobbole_article_item['title'] = title
         jobbole_article_item['article_type'] = response.meta['article_type']
-        jobbole_article_item['data_source'] = 'jobbole'
+        jobbole_article_item['data_source'] = '伯乐在线'
         jobbole_article_item['read_num'] = -1
         jobbole_article_item['comment_num'] = comment_num
         jobbole_article_item['praise_num'] = praise_num

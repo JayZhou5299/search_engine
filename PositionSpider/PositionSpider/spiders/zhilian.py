@@ -34,7 +34,7 @@ class ZhilianSpider(scrapy.Spider):
 
         for crawl_name_obj in crawl_name_list:
             # 用来获取数据总条数
-            start_crawl_url = crawl_url_model % (0, crawl_name_obj, random.random, random.random)
+            start_crawl_url = crawl_url_model % (0, crawl_name_obj, random.random(), random.random())
             res = requests.get(start_crawl_url)
             json_dict = json.loads(res.text)
             # 第一次请求获取总数量的同时将顺便获取到的数据也yield到parse_detail函数中去
@@ -52,7 +52,8 @@ class ZhilianSpider(scrapy.Spider):
                         if page_end == 0:
                             break
                         else:
-                            request_url = crawl_url_model % (page_end * 90, crawl_name_obj, random.random(), random.random())
+                            request_url = crawl_url_model % (page_end * 90, crawl_name_obj,
+                                                             random.random(), random.random())
                             yield Request(url=request_url, callback=self.parse_crawl_list)
                             page_end -= 1
 
@@ -82,7 +83,14 @@ class ZhilianSpider(scrapy.Spider):
             return
 
         url = response.url
-        position_name = response.css('.info-h3::text').extract_first().replace('\n', '').strip()
+
+        # 有新旧detail网页之分，所以抓取方式有不同
+        position_name = response.css('.info-h3::text')
+        if not position_name:
+            position_name = response.css('.summary-plane__title::text')
+
+        position_name = position_name.extract_first().replace('\n', '').strip()
+
         if '实习' in position_name:
             working_type = '实习'
         else:

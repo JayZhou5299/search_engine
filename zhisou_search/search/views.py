@@ -203,8 +203,6 @@ class SearchView(View):
                 hit_dict['second_classify'] = hit_obj['_source']['second_classify']
 
             hit_dict['data_source'] = hit_obj['_source']['data_source']
-            hit_dict['evaluation_score'] = hit_obj['_source']['evaluation_score']
-            hit_dict['learner_nums'] = hit_obj['_source']['learner_nums']
             hit_dict['url'] = hit_obj['_source']['url']
             hit_dict['price'] = hit_obj['_source']['price']
             hit_dict['score'] = hit_obj['_score']
@@ -222,9 +220,6 @@ class SearchView(View):
         """
         keywords = request.GET.get('q', '')
         page = request.GET.get('p', '1')
-
-
-
         pass
 
 

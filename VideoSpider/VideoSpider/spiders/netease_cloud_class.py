@@ -63,7 +63,7 @@ class NeteaseCloudClassSpider(scrapy.Spider):
         :return:
         """
         category_list = settings.NETEASE_CLOUD_CLASS
-        browser = webdriver.Chrome('/Users/hanyuzhou/Downloads/chromedriver')
+        browser = webdriver.Chrome(settings.CHROMEDRIVER_PATH)
 
         # 获取抓取目录列表
         for category_obj in category_list:

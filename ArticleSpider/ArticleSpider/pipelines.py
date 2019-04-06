@@ -6,10 +6,14 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymysql
 import pymysql.cursors
-import traceback
-
+from elasticsearch_dsl.connections import connections
 # 将mysql插入变成异步化的包，由twisted提供
 from twisted.enterprise import adbapi
+
+from ArticleSpider.models.es_types import ArticleType
+
+es = connections.create_connection(hosts=['60.205.224.136'])
+
 
 class ArticlespiderPipeline(object):
     def process_item(self, item, spider):
@@ -94,3 +98,70 @@ class MysqlTwistPipeline(object):
                                   item['content'], item['tags'])
         # print(final_sql)
         cursor.execute(final_sql)
+
+
+class ElasticSearchPipeline(object):
+    """
+    将数据写入到es中
+    """
+    def gen_suggests(self, index, info_tuple):
+        """
+        根据字符串生成搜索建议数组
+        :param index:
+        :param info_tuple:
+        :return:
+        """
+        used_words = set()
+        suggests = []
+        for text, weight in info_tuple:
+            if text:
+                # 调用es的analyze接口分析字符串(主要作用是分词)
+                words = es.indices.analyze(index=index, analyzer='ik_max_word',
+                                            params={'filter':['lowercase']}, body=text)
+
+                # 将长度为小于等于1的词过滤掉，这种词没有意义
+                analyzed_words = set([r['token'] for r in words['tokens'] if len(r['token']) > 1])
+
+                # 将之前用过的词去掉
+                new_words = analyzed_words - used_words
+            else:
+                new_words = set()
+
+            # 如果存在新词就将其添加到建议数组中，在used_words中添加这些词
+            if new_words:
+                suggests.append({'input': list(new_words), 'weight': weight})
+                used_words = used_words.union(new_words)
+
+        return suggests
+
+    def process_item(self, item, spider):
+        """
+        将item转换为es的数据格式
+        :param item:
+        :param spider:
+        :return:
+        """
+        # 初始化一个es的document
+        article = ArticleType()
+
+        # 将该条document的id设置为url_object_id
+        article.meta.id = item['url_object_id']
+
+        article.url = item['url']
+        article.title = item['title']
+        article.article_type = item['article_type']
+        article.data_source = item['data_source']
+        article.publish_time = item['publish_time']
+        article.abstract = item['abstract']
+        article.tags = item['tags']
+
+        # 传入的元组需要按权值从大到小排列
+        article.suggest = self.gen_suggests(ArticleType._doc_type.index,
+                                          ((article.title, 10), (article.article_type, 5),
+                                           (article.tags, 3)))
+
+        # 调用save方法直接存储到es中
+        article.save()
+
+        return item
+

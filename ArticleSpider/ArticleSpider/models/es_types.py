@@ -21,38 +21,32 @@ class CustomAnalyzer(_CustomAnalyzer):
 ik_analyzer = CustomAnalyzer('ik_max_word', filter=['lowercase'])
 
 
-class VideoType(DocType):
+class ArticleType(DocType):
     """
-    学习视频类型
+    技术文章类型，此处会影响搜索打分结果
     """
     # 搜索建议的mapping设置
     suggest = Completion(analyzer=ik_analyzer)
 
     url_object_id = Keyword()
     url = Keyword()
-    class_name = Text(analyzer='ik_max_word')
-    price = Float()
-    learner_nums = Integer()
-    class_nums = Integer()
-    category = Keyword()
-    abstract = Text(analyzer='ik_max_word')
+    title = Text(analyzer='ik_max_word')
+    article_type = Text(analyzer='ik_max_word')
     data_source = Keyword()
-    institution = Keyword()
-    second_classify = Text(analyzer='ik_max_word')
-    evaluation_score = Float()
-    evaluation_person = Integer()
-    fit_people = Text(analyzer='ik_max_word')
-    first_classify = Text(analyzer='ik_max_word')
-    evaluation_content = Keyword()
+    # 热度预留字段，由阅读数，评论数，点赞数，收藏数组成
+    # hot_score = Float()
+    publish_time = Date()
+    abstract = Text(analyzer='ik_max_word')
+    tags = Text(analyzer='ik_max_word')
 
     # 用来初始化index以及type的名称
     class Meta:
         # 类比到mysql就是数据库名
-        index = 'search_engine'
+        index = 'technology_article'
         # 类比到mysql就是表名
-        doc_type = 'video'
+        doc_type = 'article'
 
 
 if __name__ == '__main__':
     # 初始化后可以直接连接到相应的es服务器进行
-    VideoType.init()
+    ArticleType.init()

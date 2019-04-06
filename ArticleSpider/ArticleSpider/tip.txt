@@ -1,1 +1,0 @@
-1.cnblogs用到了selinum，不可以在linux机器上跑

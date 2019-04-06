@@ -22,7 +22,7 @@ class OschinaSpider(scrapy.Spider):
     开源中国爬虫
     """
     name = 'oschina'
-    allowed_domains = ['www.oschina.net/']
+    allowed_domains = ['www.oschina.net']
     start_urls = []
 
     def __init__(self):
@@ -31,7 +31,11 @@ class OschinaSpider(scrapy.Spider):
         """
         # 用来存储classification与类别的对应关系
         self.classify_map = dict()
-        response = requests.get(url='https://www.oschina.net/blog')
+        headers = {
+            "Host": 'www.oschina.net',
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"
+        }
+        response = requests.get(url='https://www.oschina.net/blog', headers=headers)
         classify_list = re.findall(r'https://www.oschina.net/blog\?classification=(\d*)"><span>·</span> (.*)</a>.*', response.text)
         for classify_obj in classify_list:
             self.start_urls.append('https://www.oschina.net/blog/widgets/_blog_index_recommend_list?'
@@ -117,7 +121,7 @@ class OschinaSpider(scrapy.Spider):
         oschina_article_item['url'] = url
         oschina_article_item['title'] = title
         oschina_article_item['article_type'] = response.meta['article_type']
-        oschina_article_item['data_source'] = 'oschina'
+        oschina_article_item['data_source'] = '开源中国'
         oschina_article_item['read_num'] = read_num
         oschina_article_item['comment_num'] = comment_num
         oschina_article_item['praise_num'] = praise_num

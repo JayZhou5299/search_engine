@@ -98,6 +98,13 @@ MYSQL_USER = 'root'
 MYSQL_PASSWORD = '123456'
 MYSQL_DB = 'search_engine'
 
+
+# 本地的chromedriver路径
+CHROMEDRIVER_PATH = '/Users/hanyuzhou/Downloads/chromedriver'
+# 阿里云服务器的chromedriver路径
+CHROMEDRIVER_PATH = '/home/yuzhou/software/chromedriver'
+
+
 # 网易云课堂start_urls           eg:'url后缀': '一级目录-二级目录'
 # NETEASE_CLOUD_CLASS = {'480000003121007': '编程语言-Python', '480000003132004': '编程语言-PHP',
 #                        '480000003130011': '编程语言-Java', '480000003130012': '编程语言-C',

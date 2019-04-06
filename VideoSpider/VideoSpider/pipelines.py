@@ -128,7 +128,7 @@ class ElasticSearchPipeline(object):
         video.url = item['url']
         video.class_name = item['class_name']
         video.price = item['price']
-        video.abstract = item['abstract']
+        video.abstract = '%s...' % item['abstract']
         video.data_source = item['data_source']
         video.second_classify = item['second_classify']
         video.first_classify = item['first_classify']
