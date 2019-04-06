@@ -101,7 +101,13 @@ class TecentClassSpider(scrapy.Spider):
         else:
             price = 0
             class_name = response.css('.course-title h3::text').extract_first()
-            learner_nums = response.css('.hint-data::text').extract()[1]
+            learner_nums = response.css('.hint-data::text').extract()
+
+            # 如果长度小于2直接返回
+            if len(learner_nums < 2):
+                return
+            else:
+                learner_nums = learner_nums[1]
             if '万' in learner_nums:
                 learner_nums = int(re.findall(r'(\d*)万', learner_nums)[0]) * 10000
 
