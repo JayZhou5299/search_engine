@@ -10,6 +10,7 @@ import pymysql.cursors
 # 将mysql插入变成异步化的包，由twisted提供
 from twisted.enterprise import adbapi
 from elasticsearch_dsl.connections import connections
+from w3lib.html import remove_tags
 
 from VideoSpider.models.es_types import VideoType
 
@@ -74,9 +75,17 @@ class MysqlTwistPipeline(object):
             values ('%s', %d, '%s')
         """
         final_sql = insert_sql % (item['url_object_id'], item['learner_nums'],
-                                  item['evaluation_content'])
+                                  self.remove_other_tags(remove_tags(item['evaluation_content'])))
         # print(final_sql)
         cursor.execute(final_sql)
+
+    def remove_other_tags(self, text):
+        """
+        去掉多余的表情符号
+        :param str:
+        :return:
+        """
+        return text.replace('/', '').replace('\\', '')
 
 
 class ElasticSearchPipeline(object):

@@ -162,9 +162,9 @@ class BaiduChuankeSpider(scrapy.Spider):
                         continue
                     score = comment_node_obj.css('.item .praise::text').extract_first()
                     if '好评' in score:
-                        score = 100
+                        score = 10
                     elif '中评' in score:
-                        score = 50
+                        score = 5
                     else:
                         score = 0
                     content_list.append(json.dumps({comment.replace('"', ''): score}, ensure_ascii=False))

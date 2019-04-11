@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
+import time
+import random
 import requests
 
 from scrapy.selector import Selector
@@ -11,34 +13,53 @@ class DajieSpider(scrapy.Spider):
     allowed_domains = ['www.dajie.com', 'so.dajie.com']
     start_urls = ['http://www.dajie.com/']
 
+
     def parse(self, response):
         """
-        获取等待爬取的对象
+        提取抓取的相关模块
         :param response:
         :return:
         """
-        referer_model = 'https://so.dajie.com/job/search?positionFunction=%s&positionName=%s'
-        real_url_model = 'https://so.dajie.com/job/ajax/search/filter?keyword=&order=0&city=&' \
-                         'recruitType=&salary=&experience=&page=%d&positionFunction=%s&' \
-                         '_CSRFToken=&ajax=1'
-        # 只需要抓取互联网相关的职位信息即可
-        crawl_node = response.css('.hn-detail-con')[1]
-        # 获取a标签的列表
-        crawl_a_list = crawl_node.css('li')
-        for crawl_a_obj in crawl_a_list:
-            function = crawl_a_obj.css('a::attr(id)').extract_first()
-            name = crawl_a_obj.css('a::text').extract_first().replace('\n', '').replace('\r', '').strip()
-            yield Request(url=real_url_model % (1, name))
+        # it相关的只有一个分类
+        it_classify_node = response.css('.hn-detail-con')[1]
 
-            self.start_urls.append(referer_model % (function, name))
-        pass
+        for it_classify_node_obj in it_classify_node:
+            url_list = it_classify_node_obj.css('a::attr(href)').extract()
+            job_classify_list = it_classify_node_obj.css('a::text').extract()
+
+            for url_obj in url_list:
+                # time.sleep(random.randint(2, 4))
+                job_classify = job_classify_list[url_list.index(url_obj)]
+                yield Request(url=url_obj, callback=self.parse_crawl_urls,
+                              meta={'job_classify': job_classify})
 
     def parse_crawl_urls(self, response):
         """
-        解析真正获取到数据的响应列表
+        提取待抓取url
         :param response:
         :return:
         """
+        'https://so.dajie.com/job/ajax/search/filter?keyword=&order=0&city=&recruitType=' \
+        '&salary=&experience=&page=1&positionFunction=130202&_CSRFToken=&ajax=1'
+
+
+        crawl_urls = response.css('.content_left .position_link::attr(href)').extract()
+        for crawl_url in crawl_urls:
+            time.sleep(random.randint(2, 4))
+            yield Request(url=crawl_url, callback=self.parse_detail,
+                          meta={'job_classify': response.meta['job_classify']})
+
+        # 如果没有下一页直接return即可
+        no_next_tag = response.css('.pager_next_disabled')
+        if no_next_tag:
+            return
+
+        # 最后一个元素是下一页的标签
+        next_url = response.css('.page_no::attr(href)').extract()[-1]
+        yield Request(url=next_url, callback=self.parse_crawl_urls,
+                      meta={'job_classify': response.meta['job_classify']})
+
+        pass
 
     def parse_detail(self, response):
         """

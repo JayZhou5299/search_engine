@@ -64,7 +64,7 @@ class HeimaSpider(scrapy.Spider):
                 content_list = json_dict['list']
                 # 由于没有打分系统，所以直接给6分做一个平均
                 for content_obj in content_list:
-                    res_list.append(json.dumps({content_obj['content']: 6}))
+                    res_list.append(json.dumps({content_obj['content']: 6}, ensure_ascii=False))
                 start_num += 1
             else:
                 break

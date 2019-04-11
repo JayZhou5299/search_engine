@@ -1,5 +1,6 @@
 import requests
 import time
+import numpy as np
 
 from selenium import webdriver
 
@@ -31,29 +32,41 @@ from http import cookiejar
 #     res = requests.get("https://ke.qq.com/cgi-bin/comment_new/course_comment_stat?cid=185189&bkn=&r=0.6285281582125787",
 #         headers=headers, cookies=cookie_dict)
 #     print(res.text)
-
-def get_json():
-    headers = {"Accept": "application/json",
-               "Content-Type": "application/json",
-               "Referer": "https://ke.qq.com/webcourse/frame.html?r=%d",
-               # "Referer": "https://ke.qq.com/course/185189",
-               "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"
-               }
-    try:
-        t = time.time()
-        headers['Referer'] = headers['Referer'] % round(t * 1000)
-        res = requests.get("https://ke.qq.com/cgi-bin/course/get_terms_detail?cid=337833&term_id_list=%5B100147308%5D&bkn=&t=0.6918", headers=headers)
-        print(res.text)
-        # content_json = res.json()
-
-    except Exception as e:
-        print("出现BUG了")
-        print(e)
-    finally:
-        time.sleep(1)
-        # index += 1
-        # get_json(index)
+#
+# def get_json():
+#     headers = {"Accept": "application/json",
+#                "Content-Type": "application/json",
+#                "Referer": "https://ke.qq.com/webcourse/frame.html?r=%d",
+#                # "Referer": "https://ke.qq.com/course/185189",
+#                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"
+#                }
+#     try:
+#         t = time.time()
+#         headers['Referer'] = headers['Referer'] % round(t * 1000)
+#         res = requests.get("https://ke.qq.com/cgi-bin/course/get_terms_detail?cid=337833&term_id_list=%5B100147308%5D&bkn=&t=0.6918", headers=headers)
+#         print(res.text)
+#         # content_json = res.json()
+#
+#     except Exception as e:
+#         print("出现BUG了")
+#         print(e)
+#     finally:
+#         time.sleep(1)
+#         # index += 1
+#         # get_json(index)
 
 
 if __name__ == '__main__':
-    get_json()
+    test_list = [{'id': 1, 'score': 100, 'learner_nums': 101},
+                 {'id': 2, 'score': 130, 'learner_nums': 103},
+                 {'id': 3, 'score': 110, 'learner_nums': 94},
+                 {'id': 4, 'score': 130, 'learner_nums': 50},
+                 {'id': 5, 'score': 170, 'learner_nums': 20}]
+    transfer_list = list()
+    for test_obj in test_list:
+        temp_tuple = (test_obj['score'], test_obj['learner_nums'])
+        transfer_list.append(temp_tuple)
+
+    np_arr = np.array(transfer_list)
+    pass
+

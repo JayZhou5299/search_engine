@@ -8,8 +8,8 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 
 # execute(['scrapy', 'crawl', 'zhilian'])
-execute(['scrapy', 'crawl', 'Boss'])
-# execute(['scrapy', 'crawl', 'baidu_chuanke'])
+# execute(['scrapy', 'crawl', 'Boss'])
+execute(['scrapy', 'crawl', 'lagou'])
 # execute(['scrapy', 'crawl', 'imooc'])
 # execute(['scrapy', 'crawl', 'edu_51cto'])
 

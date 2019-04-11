@@ -124,3 +124,26 @@ class RandomUserAgentMiddleWare(object):
         print(temp_ua)
         request.headers.setdefault('User-Agent', temp_ua)
         # request.meta['proxy']
+
+
+class RandomIpProxyMiddleWare(object):
+    #随机更换ip代理
+
+    def __init__(self, crawler):
+        """
+        该方法通过cls(crawler)调用
+        :param crawler:
+        """
+        super(RandomUserAgentMiddleWare, self).__init__()
+        self.ua = UserAgent()
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler)
+
+    def process_request(self, request, spider):
+        temp_ua = self.ua.random
+        print(temp_ua)
+        request.headers.setdefault('User-Agent', temp_ua)
+        # request.meta['proxy']
+

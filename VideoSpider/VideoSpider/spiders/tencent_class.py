@@ -104,7 +104,7 @@ class TecentClassSpider(scrapy.Spider):
             learner_nums = response.css('.hint-data::text').extract()
 
             # 如果长度小于2直接返回
-            if len(learner_nums < 2):
+            if len(learner_nums) < 2:
                 return
             else:
                 learner_nums = learner_nums[1]

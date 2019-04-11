@@ -68,9 +68,10 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'PositionSpider.pipelines.PositionspiderPipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'PositionSpider.pipelines.MysqlTwistPipeline': 300,
+   'PositionSpider.pipelines.ElasticSearchPipeline': 200,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html

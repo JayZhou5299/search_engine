@@ -220,7 +220,37 @@ class SearchView(View):
         """
         keywords = request.GET.get('q', '')
         page = request.GET.get('p', '1')
-        pass
+
+        # 转换可能报异常，报错默认为第一页
+        try:
+            page = int(page)
+        except Exception as e:
+            page = 1
+
+        response = client.search(
+            index='job_help',
+            body={
+                'query': {
+                    "multi_match": {
+                        'query': keywords,
+                        'fields': ['class_name', 'first_classify', 'second_classify', 'abstract']
+                    }
+                },
+                'from': (page - 1) * 10,
+                'size': 10,
+                'highlight': {
+                    # 高亮数据的标红样式，可以自己定义，前端设置的css样式为keyWord，
+                    'pre_tags': ['<span class="keyWord">'],
+                    'post_tags': ['</span>'],
+                    'fields': {
+                        'class_name': {},
+                        'abstract': {},
+                        'first_classify': {},
+                        'second_classify': {}
+                    }
+                }
+            }
+        )
 
 
 if __name__ == '__main__':

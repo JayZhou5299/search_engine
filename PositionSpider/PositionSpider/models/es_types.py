@@ -21,7 +21,7 @@ class CustomAnalyzer(_CustomAnalyzer):
 ik_analyzer = CustomAnalyzer('ik_max_word', filter=['lowercase'])
 
 
-class VideoType(DocType):
+class PositionType(DocType):
     """
     学习视频类型
     """
@@ -30,29 +30,25 @@ class VideoType(DocType):
 
     url_object_id = Keyword()
     url = Keyword()
-    class_name = Text(analyzer='ik_max_word')
-    price = Float()
-    learner_nums = Integer()
-    class_nums = Integer()
-    category = Keyword()
+    position_name = Text(analyzer='ik_max_word')
+    salary_min = Float()
+    salary_max = Float()
+    welfare = Keyword()
+    working_place = Keyword()
+    working_exp = Keyword()
+    education = Keyword()
     abstract = Text(analyzer='ik_max_word')
     data_source = Keyword()
-    institution = Keyword()
-    second_classify = Text(analyzer='ik_max_word')
-    evaluation_score = Float()
-    evaluation_person = Integer()
-    fit_people = Text(analyzer='ik_max_word')
-    first_classify = Text(analyzer='ik_max_word')
-    evaluation_content = Keyword()
+    company_name = Text(analyzer='ik_max_word')
 
     # 用来初始化index以及type的名称
     class Meta:
         # 类比到mysql就是数据库名
-        index = 'search_engine'
+        index = 'position_message'
         # 类比到mysql就是表名
-        doc_type = 'video'
+        doc_type = 'position'
 
 
 if __name__ == '__main__':
     # 初始化后可以直接连接到相应的es服务器进行
-    VideoType.init()
+    PositionType.init()
