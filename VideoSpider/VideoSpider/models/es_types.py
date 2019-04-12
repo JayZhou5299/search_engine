@@ -5,9 +5,11 @@ from elasticsearch_dsl import DocType, Date, Nested, Boolean, \
     analyzer, InnerObjectWrapper, Completion, Keyword, Text, Integer, Float
 
 from elasticsearch_dsl.analysis import CustomAnalyzer as _CustomAnalyzer
-
 from elasticsearch_dsl.connections import connections
-connections.create_connection(hosts=['60.205.224.136'])
+
+from VideoSpider import settings
+
+connections.create_connection(hosts=[settings.ES_ADDRESS])
 
 
 class CustomAnalyzer(_CustomAnalyzer):

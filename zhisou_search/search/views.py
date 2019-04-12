@@ -7,8 +7,10 @@ from search.models import JobWantedInformationType
 # elasticsearch-dsl是对elasticsearch做的更底层的封装
 from elasticsearch import Elasticsearch
 
+from zhisou_search import settings
 
-client = Elasticsearch(hosts=['60.205.224.136'])
+
+client = Elasticsearch(hosts=[settings.ES_ADDRESS])
 
 
 # Create your views here.

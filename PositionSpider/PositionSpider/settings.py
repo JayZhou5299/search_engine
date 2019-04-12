@@ -103,3 +103,6 @@ MYSQL_DB = 'search_engine'
 CHROMEDRIVER_PATH = '/Users/hanyuzhou/Downloads/chromedriver'
 # 阿里云服务器的chromedriver路径
 CHROMEDRIVER_PATH = '/home/yuzhou/software/chromedriver'
+
+# ES_ADDRESS = '60.205.224.136'
+ES_ADDRESS = '39.96.16.6'

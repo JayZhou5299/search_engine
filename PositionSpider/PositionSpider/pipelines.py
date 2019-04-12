@@ -11,8 +11,9 @@ import pymysql.cursors
 from twisted.enterprise import adbapi
 from elasticsearch_dsl.connections import connections
 from PositionSpider.models.es_types import PositionType
+from PositionSpider import settings
 
-es = connections.create_connection(hosts=['60.205.224.136'])
+es = connections.create_connection(hosts=[settings.ES_ADDRESS])
 
 
 class PositionspiderPipeline(object):

@@ -123,3 +123,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+
+# ES_ADDRESS = '60.205.224.136'
+ES_ADDRESS = '39.96.16.6'

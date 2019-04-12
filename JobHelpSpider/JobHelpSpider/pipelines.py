@@ -8,8 +8,9 @@ from elasticsearch_dsl.connections import connections
 
 
 from JobHelpSpider.models.es_types import JobWantedInformationType
+from JobHelpSpider import settings
 
-es = connections.create_connection(hosts=['60.205.224.136'])
+es = connections.create_connection(hosts=[settings.ES_ADDRESS])
 
 
 class JobhelpspiderPipeline(object):
