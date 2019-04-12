@@ -64,9 +64,14 @@ ROBOTSTXT_OBEY = False
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
+
+SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 ITEM_PIPELINES = {
-   'JobHelpSpider.pipelines.ElasticSearchPipeline': 300,
+    'scrapy_redis.pipelines.RedisPipeline': 300,
+    'JobHelpSpider.pipelines.ElasticSearchPipeline': 200,
 }
+
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -95,3 +100,10 @@ MYSQL_DB = 'search_engine_test'
 
 # ES_ADDRESS = '60.205.224.136'
 ES_ADDRESS = '39.96.16.6'
+
+
+# slave端redis_url配置
+# REDIS_URL = 'redis://192.168.1.112:6379'
+# master端redis配置
+# REDIS_HOST = 'localhost'
+# REDIS_PORT = 6379
