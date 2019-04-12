@@ -3,6 +3,7 @@ import scrapy
 import time
 import re
 import random
+import redis
 import datetime
 
 from scrapy import Request
@@ -13,6 +14,7 @@ from scrapy_redis.spiders import RedisSpider
 from JobHelpSpider.items import JobWantedInformation
 from JobHelpSpider.utils.common import get_md5
 from JobHelpSpider.utils.common import remove_t_r_n
+from JobHelpSpider import settings
 
 
 # class AcmcoderSpider(scrapy.Spider):
@@ -21,6 +23,14 @@ class AcmcoderSpider(RedisSpider):
     allowed_domains = ['discuss.acmcoder.com']
     # start_urls = ['http://discuss.acmcoder.com/index?tab=job&page=1']
     redis_key = 'acmcoder:start_urls'
+
+    def __init__(self):
+        """
+        初始化向redis中添加start_urls
+        """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
+        if redis_cli.exists(self.redis_key) == 0:
+            redis_cli.set(self.redis_key, 'http://discuss.acmcoder.com/index?tab=job&page=1')
 
     def parse(self, response):
         """
