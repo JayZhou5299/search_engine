@@ -75,7 +75,7 @@ class ElasticSearchPipeline(object):
 
         # 调用save方法直接存储到es中
         job_wanted_information.save()
-        
+
         # 将相关的信息写入文件中查看分布式部署是否正常
         with open('/home/yuzhou/scrapy_redis.txt', 'a') as f:
             f.write('url:%s,title:%s\n' % (item['url'], item['title']))
