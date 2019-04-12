@@ -30,7 +30,7 @@ class AcmcoderSpider(RedisSpider):
         """
         redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
         if redis_cli.exists(self.redis_key) == 0:
-            redis_cli.set(self.redis_key, 'http://discuss.acmcoder.com/index?tab=job&page=1')
+            redis_cli.lpush(self.redis_key, 'http://discuss.acmcoder.com/index?tab=job&page=1')
 
     def parse(self, response):
         """
