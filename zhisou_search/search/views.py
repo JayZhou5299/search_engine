@@ -158,6 +158,7 @@ class SearchView(View):
                 'query': {
                     "multi_match": {
                         'query': keywords,
+                        # 只要这四个属性中任意一个属性包含keywords的分词结果列表中的词，该条doc就会被查出来
                         'fields': ['class_name', 'first_classify', 'second_classify', 'abstract']
                     }
                 },
@@ -182,22 +183,22 @@ class SearchView(View):
         hit_list = []
         for hit_obj in response['hits']['hits']:
             hit_dict = dict()
-            if 'class_name' in hit_obj['highlight']:
+            if 'highlight' in hit_obj.keys() and 'class_name' in hit_obj['highlight']:
                 hit_dict['class_name'] = ''.join(hit_obj['highlight']['class_name'])
             else:
                 hit_dict['class_name'] = hit_obj['_source']['class_name']
 
-            if 'abstract' in hit_obj['highlight']:
+            if 'highlight' in hit_obj.keys() and 'abstract' in hit_obj['highlight']:
                 hit_dict['abstract'] = ''.join(hit_obj['highlight']['abstract'])
             else:
                 hit_dict['abstract'] = hit_obj['_source']['abstract']
 
-            if 'first_classify' in hit_obj['highlight']:
+            if 'highlight' in hit_obj.keys() and 'first_classify' in hit_obj['highlight']:
                 hit_dict['first_classify'] = hit_obj['highlight']['first_classify'][0]
             else:
                 hit_dict['first_classify'] = hit_obj['_source']['first_classify']
 
-            if 'second_classify' in hit_obj['highlight']:
+            if 'highlight' in hit_obj.keys() and 'second_classify' in hit_obj['highlight']:
                 hit_dict['second_classify'] = hit_obj['highlight']['second_classify'][0]
             else:
                 hit_dict['second_classify'] = hit_obj['_source']['second_classify']
@@ -233,7 +234,8 @@ class SearchView(View):
                 'query': {
                     "multi_match": {
                         'query': keywords,
-                        'fields': ['class_name', 'first_classify', 'second_classify', 'abstract']
+                        # 只要这两个属性中任意一个属性包含keywords的分词结果列表中的词，该条doc就会被查出来
+                        'fields': ['title', 'abstract']
                     }
                 },
                 'from': (page - 1) * 10,
@@ -243,14 +245,38 @@ class SearchView(View):
                     'pre_tags': ['<span class="keyWord">'],
                     'post_tags': ['</span>'],
                     'fields': {
-                        'class_name': {},
+                        'title': {},
                         'abstract': {},
-                        'first_classify': {},
-                        'second_classify': {}
                     }
                 }
             }
         )
+
+        total_nums = response['hits']['total']
+        page_nums = int(total_nums / 10) + 1
+
+        hit_list = []
+        for hit_obj in response['hits']['hits']:
+            hit_dict = dict()
+            if 'highlight' in hit_obj.keys() and 'title' in hit_obj['highlight']:
+                hit_dict['title'] = ''.join(hit_obj['highlight']['title'])
+            else:
+                hit_dict['title'] = hit_obj['_source']['title']
+
+            if 'highlight' in hit_obj.keys() and 'abstract' in hit_obj['highlight']:
+                hit_dict['abstract'] = ''.join(hit_obj['highlight']['abstract'])
+            else:
+                hit_dict['abstract'] = hit_obj['_source']['abstract']
+
+            hit_dict['data_source'] = hit_obj['_source']['data_source']
+            hit_dict['url'] = hit_obj['_source']['url']
+            hit_dict['publish_time'] = hit_obj['_source']['publish_time']
+            hit_dict['score'] = hit_obj['_score']
+            hit_list.append(hit_dict)
+
+        return {'html_obj': 'result_job_wanted_information.html',
+                'data_obj': {'page': page, 'all_hits': hit_list, 'key_words': keywords,
+                             'total_nums': total_nums, 'page_nums': page_nums}}
 
 
 if __name__ == '__main__':

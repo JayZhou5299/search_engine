@@ -32,7 +32,6 @@ class JobWantedInformationType(DocType):
     url = Keyword()
     title = Text(analyzer='ik_max_word')
     publish_time = Date()
-    content = Keyword()
     data_source = Keyword()
     abstract = Text(analyzer='ik_max_word')
 

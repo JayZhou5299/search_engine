@@ -65,12 +65,8 @@
                     {% for hit in all_hits %}
                     <div class="resultItem">
                             <div class="itemHead">
-                                <a href="{{ hit.url }}"  target="_blank" class="title">{% autoescape off %}{{ hit.class_name }}{% endautoescape %}</a>
+                                <a href="{{ hit.url }}"  target="_blank" class="title">{% autoescape off %}{{ hit.title }}{% endautoescape %}</a>
                                 <span class="divsion">-</span>
-                                <span class="fileType">
-                                    <span class="label">网站分类：</span>
-                                    <span class="value">{% autoescape off %}{{ hit.first_classify }} >> {{ hit.second_classify }}{% endautoescape %}</span>
-                                </span>
                                 <span class="dependValue">
                                     <span class="label">搜索得分：</span>
                                     <span class="value">{{ hit.score }}</span>
@@ -85,12 +81,8 @@
                                     <span class="value">{{ hit.data_source }}</span>
                                 </span>
                                 <span class="info">
-                                    <label>推荐度：</label>
-                                    <span class="value">2017-04-23</span>
-                                </span>
-                                <span class="info">
-                                    <label>价格：</label>
-                                    <span class="value">{{ hit.price }}</span>
+                                    <label>发布时间：</label>
+                                    <span class="value">{{ hit.publish_time }}</span>
                                 </span>
                             </div>
                         </div>
@@ -185,7 +177,7 @@
 	});
 	function pageselectCallback(page_id, jq) {
 	    var page = parseInt(page_id) + 1
-		window.location.href=search_url+'?q='+key_words+'&p='+page
+		window.location.href=search_url+'?q='+key_words+'&s_type='+$(".searchItem.current").attr('data-type')+'&p='+page
 	}
 	
 	setHeight();

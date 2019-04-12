@@ -28,6 +28,6 @@ if __name__ == '__main__':
     if user_input.spider:
         execute(['scrapy', 'crawl', user_input.spider])
     else:
-        print('输入格式错误, [提示]python -s (爬虫名称)     eg: python -s imooc,     '
-              '（目前支持的spider_name有baidu_chuanke, tencent_class, imooc, edu_51cto）')
+        print('输入格式错误, [提示]python -s (爬虫名称)     eg: python -s nowcoder,     '
+              '（目前支持的spider_name有nowcoder, acmcoder）')
 

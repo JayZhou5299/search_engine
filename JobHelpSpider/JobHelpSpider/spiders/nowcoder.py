@@ -69,4 +69,3 @@ class NowcoderSpider(scrapy.Spider):
         nowcoder_item['abstract'] = abstract
 
         yield nowcoder_item
-        pass

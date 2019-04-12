@@ -64,7 +64,7 @@ class ElasticSearchPipeline(object):
         job_wanted_information.meta.id = item['url_object_id']
         job_wanted_information.url = item['url']
         job_wanted_information.title = item['title']
-        job_wanted_information.content = item['content']
+        job_wanted_information.data_source = item['data_source']
         job_wanted_information.abstract = item['abstract']
         job_wanted_information.publish_time = item['publish_time']
         job_wanted_information.suggest = self.gen_suggests(JobWantedInformationType._doc_type.index,
