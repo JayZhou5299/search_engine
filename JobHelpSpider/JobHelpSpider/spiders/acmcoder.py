@@ -38,7 +38,7 @@ class AcmcoderSpider(RedisSpider):
         :param response:
         :return:
         """
-        # time.sleep(random.randint(1, 4))
+        time.sleep(random.randint(1, 4))
         # 如果包含没有数据的tag，直接返回即可
         no_data_tag = response.css('#content .inner p')
         if no_data_tag:

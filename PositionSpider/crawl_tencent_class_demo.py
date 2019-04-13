@@ -58,20 +58,20 @@ from http import cookiejar
 
 
 if __name__ == '__main__':
-    driver = webdriver.Chrome(executable_path="/Users/hanyuzhou/Downloads/chromedriver")
-    # driver.get('https://www.dajie.com')
-    driver.get('http://www.bejson.com/')
+    driver = webdriver.Chrome("/Users/hanyuzhou/Downloads/chromedriver")
+    driver.get('https://www.dajie.com')
+    # driver.get('http://www.bejson.com/')
     cookies_dict = driver.get_cookies()
     time.sleep(2)
     cookie_str = ''
     for cookies_obj in cookies_dict:
         # print(cookies_obj)
-        cookie_str += '%s:%s;' % (cookies_obj['name'], cookies_obj['value'])
+        cookie_str += '%s=%s; ' % (cookies_obj['name'], cookies_obj['value'])
     print(type(cookies_dict))
     print(cookies_dict)
     print(cookie_str)
-    with open('/home/yuzhou/cookie.txt', 'a') as f:
-        f.write(cookie_str)
+    # with open('/home/yuzhou/cookie.txt', 'a') as f:
+    #     f.write(cookie_str)
     driver.close()
     # cookie_str = ''
     # # 声明一个CookieJar对象实例来保存cookie
@@ -86,15 +86,15 @@ if __name__ == '__main__':
     # for item in cookie:
     #     cookie_str += '%s:%s;' % (item.name, item.value)
     #
-    # headers = {
-    #     'Accept': 'application/json, text/javascript, */*; q=0.01',
-    #     'Accept-Encoding': 'gzip, deflate, br',
-    #     'Accept-Language': 'zh-CN,zh;q=0.8',
-    #     'Cookie': "DJ_UVID=MTU1MzI0NDI2Mzc3MzMzODUw; Hm_lvt_6822a51ffa95d58bbe562e877f743b4f=1553244271,1554518025,1554897087,1554974880; _ga=GA1.2.1224385216.1553244271; _gid=GA1.2.976055477.1554897088; _close_autoreg=1554974886799; _close_autoreg_num=4; DJ_RF=empty; DJ_EU=http%3A%2F%2Fso.dajie.com%2Fjob%2Fsearch%3FpositionFunction%3D130201%26positionName%3D%25E7%25BD%2591%25E9%25A1%25B5%25E8%25AE%25BE%25E8%25AE%25A1; SO_COOKIE_V2=3b2fArhROjPV7KLHz3tgHDnQrxBlBRfPOzs4RM14AzoUKV7m2Re/I4xL772izIEWLXfeh8Wi4cEYVn1RaEgkuPTfioJaPJa4nLk0; Hm_lpvt_6822a51ffa95d58bbe562e877f743b4f=1554975233; _gat_gtag_UA_117102476_1=1",
-    #     'Connection': 'keep-alive',
-    #     'Host': 'so.dajie.com',
-    #     'Referer': 'https://so.dajie.com/job/search?positionFunction=130202&positionName=UI%E8%AE%BE%E8%AE%A1&from=job',
-    #     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:66.0) Gecko/20100101 Firefox/66.0',
-    # }
-    # res = requests.get('', headers=headers)
+    headers = {
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.8',
+        'Cookie': cookie_str,
+        'Connection': 'keep-alive',
+        'Host': 'so.dajie.com',
+        'Referer': 'https://so.dajie.com/job/search?positionFunction=130202&positionName=UI%E8%AE%BE%E8%AE%A1&from=job',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:66.0) Gecko/20100101 Firefox/66.0',
+    }
+    res = requests.get('https://so.dajie.com/job/ajax/search/filter?keyword=&order=0&city=&recruitType=&salary=&experience=&page=3&positionFunction=130202&_CSRFToken=&ajax=1', headers=headers)
     pass
