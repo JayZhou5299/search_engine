@@ -5,9 +5,11 @@ from elasticsearch_dsl import DocType, Date, Nested, Boolean, \
     analyzer, InnerObjectWrapper, Completion, Keyword, Text, Integer, Float
 
 from elasticsearch_dsl.analysis import CustomAnalyzer as _CustomAnalyzer
-
 from elasticsearch_dsl.connections import connections
-connections.create_connection(hosts=['60.205.224.136'])
+
+from ArticleSpider import settings
+
+connections.create_connection(hosts=[settings.ES_ADDRESS])
 
 
 class CustomAnalyzer(_CustomAnalyzer):
@@ -34,7 +36,7 @@ class ArticleType(DocType):
     article_type = Text(analyzer='ik_max_word')
     data_source = Keyword()
     # 热度预留字段，由阅读数，评论数，点赞数，收藏数组成
-    # hot_score = Float()
+    hot_score = Integer()
     publish_time = Date()
     abstract = Text(analyzer='ik_max_word')
     tags = Text(analyzer='ik_max_word')

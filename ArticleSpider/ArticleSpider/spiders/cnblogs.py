@@ -90,8 +90,8 @@ class CnblogsSpider(scrapy.Spider):
         cnblogs_item['data_source'] = '博客园'
         cnblogs_item['read_num'] = int(read_num)
         cnblogs_item['comment_num'] = int(comment_num)
-        cnblogs_item['praise_num'] = -1
-        cnblogs_item['collection_num'] = -1
+        cnblogs_item['praise_num'] = 0
+        cnblogs_item['collection_num'] = 0
 
         cnblogs_item['publish_time'] = publish_time
         cnblogs_item['abstract'] = abstract

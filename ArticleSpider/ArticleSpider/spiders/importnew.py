@@ -82,13 +82,12 @@ class ImportnewSpider(scrapy.Spider):
         importnew_article_item['title'] = title
         importnew_article_item['article_type'] = 'java'
         importnew_article_item['data_source'] = 'importnew'
-        importnew_article_item['read_num'] = -1
+        importnew_article_item['read_num'] = 0
         importnew_article_item['comment_num'] = comment_num
-        importnew_article_item['praise_num'] = -1
-        importnew_article_item['collection_num'] = -1
+        importnew_article_item['praise_num'] = 0
+        importnew_article_item['collection_num'] = 0
         importnew_article_item['publish_time'] = publish_time
         importnew_article_item['abstract'] = abstract
-        importnew_article_item['content'] = content
         importnew_article_item['tags'] = tags
         # pass
         yield importnew_article_item

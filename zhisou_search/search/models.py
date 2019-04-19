@@ -75,6 +75,34 @@ class JobWantedInformationType(DocType):
         doc_type = 'job_wanted_information'
 
 
+class PositionType(DocType):
+    """
+    学习视频类型
+    """
+    # 搜索建议的mapping设置
+    suggest = Completion(analyzer=ik_analyzer)
+
+    url_object_id = Keyword()
+    url = Keyword()
+    position_name = Text(analyzer='ik_max_word')
+    salary_min = Float()
+    salary_max = Float()
+    welfare = Keyword()
+    working_place = Keyword()
+    working_exp = Keyword()
+    education = Keyword()
+    abstract = Text(analyzer='ik_max_word')
+    data_source = Keyword()
+    company_name = Text(analyzer='ik_max_word')
+
+    # 用来初始化index以及type的名称
+    class Meta:
+        # 类比到mysql就是数据库名
+        index = 'position_message'
+        # 类比到mysql就是表名
+        doc_type = 'position'
+
+
 if __name__ == '__main__':
     pass
 

@@ -109,4 +109,11 @@ JOBBOLE_LIST_TWO = [['http://android.jobbole.com/all-posts/', 'http://ios.jobbol
 JOBBOLE_LIST_THREE = [['http://blog.jobbole.com/category/c-cpp/', 'http://blog.jobbole.com/category/php-programmer/',
                        'http://blog.jobbole.com/category/ruby/', 'http://blog.jobbole.com/category/go/'], r'.*category/(.*)/.*']
 
+# 本地的chromedriver路径
+CHROMEDRIVER_PATH = '/Users/hanyuzhou/Downloads/chromedriver'
+# 阿里云服务器的chromedriver路径
+CHROMEDRIVER_PATH = '/home/yuzhou/software/chromedriver'
+
+# ES_ADDRESS = '60.205.224.136'
+ES_ADDRESS = '39.96.16.6'
 

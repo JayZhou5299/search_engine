@@ -87,15 +87,11 @@ class MysqlTwistPipeline(object):
         :return:
         """
         insert_sql = """
-            replace into tb_technical_articles(url_object_id, url, title, article_type, data_source,
-            read_num, comment_num, praise_num, collection_num, publish_time, abstract, content, tags)
-            values ('%s', '%s', '%s', '%s', '%s', %d, %d, %d, %d, '%s', '%s', '%s', '%s')
+            replace into tb_technical_articles(url_object_id, title, article_type, abstract, tags)
+            values ('%s', '%s', '%s', '%s', '%s')
         """
-        # print('test')
-        final_sql = insert_sql % (item['url_object_id'], item['url'], item['title'], item['article_type'],
-                                  item['data_source'], item['read_num'], item['comment_num'], item['praise_num'],
-                                  item['collection_num'], item['publish_time'], item['abstract'],
-                                  item['content'], item['tags'])
+        final_sql = insert_sql % (item['url_object_id'], item['title'],
+                                  item['article_type'], item['abstract'], item['tags'])
         # print(final_sql)
         cursor.execute(final_sql)
 
@@ -154,6 +150,9 @@ class ElasticSearchPipeline(object):
         article.publish_time = item['publish_time']
         article.abstract = item['abstract']
         article.tags = item['tags']
+
+        # 热度计算公式
+        article.hot_score = 8 * item['comment_num'] + 3 * item['praise_num'] + 5 * item['collection_num'] + item['read_num']
 
         # 传入的元组需要按权值从大到小排列
         article.suggest = self.gen_suggests(ArticleType._doc_type.index,

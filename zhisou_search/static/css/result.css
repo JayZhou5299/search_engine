@@ -1,8 +1,8 @@
 @charset "utf-8";
 html{*overflow:auto;}
-#hd{padding:20px 10px;}
+#hd{padding:10px 10px 0px 10px; height: 55px;}
 #bd{margin-bottom:40px;}
-.logo{float:left;margin-right:30px; height:33px;}
+.logo{float:left;height:38px;background-size: auto 38px;}
 /*input搜索区域*/
 .inputArea{float:left;position:relative;}
 .inputArea .searchInput{border:1px solid #bfbfbf;padding:0 15px;outline:none;height:35px;*line-height:35px;width:350px; background:url(../img/inputbg.png);font-size:14px;}
@@ -12,7 +12,7 @@ html{*overflow:auto;}
 .inputArea .advanced{position:absolute;font-size:14px;left:500px;top:12px;width:60px;text-decoration:underline;}
 
 /*分界区域，导航*/
-.nav{margin-bottom:24px;height:31px;background:#f9f9f9;border-bottom:1px solid #e0e0e0;padding:5px 0 0 210px;}
+.nav{margin-bottom:24px;height:31px;background:#f9f9f9;border-bottom:1px solid #e0e0e0;padding:5px 0 0 125px;}
 .searchList{float:left;padding-left:5px;}
 .searchList .searchItem{float:left;margin-right:15px;font-size:14px;padding:0 3px 2px 3px;cursor:pointer;height:26px; line-height:26px;}
 .searchList .searchItem.current{color:#0080cc;border-bottom:3px solid #9cc813;font-weight:bold;}
@@ -20,7 +20,7 @@ html{*overflow:auto;}
 #container.sideBarHide .nav{padding-left:35px;}
 
 /*#main区域样式*/
-#main{padding:0 215px 0 182px;}
+#main{padding:0 215px 0 100px;}
 #main.sideBarHide{padding-left:10px;}
 /*侧边栏搜索条件*/
 .sideBar{position:relative;float:left;margin-left:-182px;width:182px;}
@@ -48,7 +48,9 @@ html{*overflow:auto;}
 #main.sideBarHide .sideBar .sideBarShowHide a:hover{*background-position:0 -31px;}
 #main.sideBarHide .sideBar .sideBarShowHide{background:none;}
 
-.resultArea{float:left;width:100%;}
+.resultArea{float:left;width:70%;
+    padding-right: 5%;
+    margin-right: 5%;}
 .resultArea .resultTotal{position:relative;padding-left:30px;margin-bottom:20px;}
 .resultArea .resultTotal .info{color:#9a9a9a;}
 .resultArea .resultTotal .orderOpt{position:absolute;right:50px;}
@@ -81,7 +83,7 @@ html{*overflow:auto;}
 .resultArea .searchInResult .inResult{position:absolute;right:-190px;top:8px;font-size:14px;text-decoration:underline;}
 .resultArea .searchInResult .searchButton{left:417px;}
 /*历史搜索区域*/
-.historyArea{float:right;margin-right:-212px;width:212px;}
+.historyArea{min-width:100px;}
 .historyArea h6{margin-bottom:10px;font-weight:bold;}
 .historyArea .historyList{margin-bottom:20px;}
 .historyArea .historyList li{margin-bottom:5px;}

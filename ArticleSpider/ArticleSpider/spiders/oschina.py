@@ -128,7 +128,6 @@ class OschinaSpider(scrapy.Spider):
         oschina_article_item['collection_num'] = collection_num
         oschina_article_item['publish_time'] = publish_time
         oschina_article_item['abstract'] = abstract
-        oschina_article_item['content'] = content
         oschina_article_item['tags'] = ','.join(tags)
 
         yield oschina_article_item

@@ -14,7 +14,7 @@ def entrance():
     函数入口
     :return:
     """
-    url = 'https://study.163.com/category/480000003121005/'
+    url = 'https://mp.weixin.qq.com/'
     cookie_dict = dict()
     browser = webdriver.Chrome('/Users/hanyuzhou/Downloads/chromedriver')
     browser.get(url)

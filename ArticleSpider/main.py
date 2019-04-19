@@ -29,5 +29,5 @@ if __name__ == '__main__':
         execute(['scrapy', 'crawl', user_input.spider])
     else:
         print('输入格式错误, [提示]python -s (爬虫名称)     eg: python -s jobbole,     '
-              '（目前支持的spider_name有jobbole, importnew, linux_cn, oschina, cnblogs）')
+              '（目前支持的spider_name有jobbole, importnew, linux_cn, oschina, cnblogs, juejin）')
 

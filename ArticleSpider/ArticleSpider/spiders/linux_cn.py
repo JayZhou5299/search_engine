@@ -77,13 +77,12 @@ class LinuxCnSpider(scrapy.Spider):
         linux_cn_article_item['title'] = title
         linux_cn_article_item['article_type'] = 'linux'
         linux_cn_article_item['data_source'] = 'linux中国'
-        linux_cn_article_item['read_num'] = -1
+        linux_cn_article_item['read_num'] = 0
         linux_cn_article_item['comment_num'] = comment_num
         linux_cn_article_item['praise_num'] = praise_num
         linux_cn_article_item['collection_num'] = collection_num
         linux_cn_article_item['publish_time'] = publish_time
         linux_cn_article_item['abstract'] = abstract
-        linux_cn_article_item['content'] = content
         linux_cn_article_item['tags'] = ''
 
         yield linux_cn_article_item
