@@ -73,10 +73,10 @@ jQuery.fn.pagination = function(maxentries, opts) {
 							classes : ""
 						}, appendopts || {});
 				if (page_id == current_page) {
-					var lnk = $("<span class='current'>" + (appendopts.text)
+					var lnk = $("<span class='current page'>" + (appendopts.text)
 							+ "</span>");
 				} else {
-					var lnk = $("<a>" + (appendopts.text) + "</a>").bind(
+					var lnk = $("<a class='page'>" + (appendopts.text) + "</a>").bind(
 							"click", getClickHandler(page_id)).attr('href',
 							opts.link_to.replace(/__id__/, page_id));
 

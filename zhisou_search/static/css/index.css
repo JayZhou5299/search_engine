@@ -1,9 +1,9 @@
 @charset "utf-8";
 html{*overflow:auto;}
-#main{width:730px;margin:75px auto 0;}
+#main{width:730px;margin:75px auto 0;padding-left: 50px;}
 #main h1.title{width:600px;}
 #bd{margin-bottom:20px;}
-.logo.large{margin:0px auto 10px auto;width:380px;height:120px;background: url(../img/logo.png) no-repeat center center;}
+.logo.large{margin:0px auto 10px auto;width:380px;height:120px;background: url(../img/logo.png) no-repeat center center;margin-left: 80px}
 
 /*nav样式*/
 .nav{margin-bottom:10px;}
@@ -13,14 +13,15 @@ html{*overflow:auto;}
 
 /*input搜索区域*/
 .inputArea{position:relative;margin-bottom:65px;}
-.inputArea .searchInput{border:1px solid #bfbfbf;padding:0 15px;outline:none;height:40px;*height:39px;*line-height:40px;width:520px; background:url(../img/inputbg.png);font-size:14px;}
+/*.inputArea .searchInput{border:1px solid #bfbfbf;padding:0 15px;outline:none;height:40px;*height:39px;*line-height:40px;width:520px; background:url(../img/inputbg.png);font-size:14px;}*/
 .inputArea .searchButton{position:absolute;left:550px;*left:552px;*top:1px;width:106px;height:42px;*height:41px;background:url(../img/seachbtn.png) no-repeat;border:none;cursor:pointer;}
 /*高级搜索*/
 .inputArea .advanced{position:absolute;font-size:14px;left:674px;top:12px;text-decoration:underline;}
 /*联想下拉区域*/
-.inputArea .dataList{display:none;position:absolute;left:0;top:42px;*top:43px;width:550px;padding:5px 0;background:#fff;border:1px solid #bfbfbf;border-top:none;}
-.inputArea .dataList li{padding:2px 15px;font-size:14px;}
+.inputArea .dataList{top:37px;*top:43px;width:430px;padding:5px 0;background:#fff;border:1px solid #bfbfbf;border-top:none;margin-left: 15px}
+.inputArea .dataList li{font-size:14px;}
 .inputArea .dataList li:hover{background:#f0f0f0;color:#0080cc;font-weight:bold;}
+.my-ul{padding-bottom: 20px;padding-left: 10px !important;}
 
 /*搜索历史区域*/
 .historyArea{margin:0 auto;width:485px;}

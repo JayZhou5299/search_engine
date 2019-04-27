@@ -69,6 +69,7 @@ DOWNLOADER_MIDDLEWARES = {
 ITEM_PIPELINES = {
    # 'ArticleSpider.pipelines.ArticlespiderPipeline': 300,
    'ArticleSpider.pipelines.MysqlTwistPipeline': 300,
+   'ArticleSpider.pipelines.ElasticSearchPipeline': 200,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -94,7 +95,7 @@ ITEM_PIPELINES = {
 MYSQL_HOST = '60.205.224.136'
 MYSQL_USER = 'root'
 MYSQL_PASSWORD = '123456'
-MYSQL_DB = 'search_engine_test'
+MYSQL_DB = 'search_engine'
 
 # 由于jobbole中各个域名不同，所以需要进行配置
 JOBBOLE_LIST_ONE = [['http://blog.jobbole.com/tag/machinelearning/', 'http://blog.jobbole.com/tag/git/',

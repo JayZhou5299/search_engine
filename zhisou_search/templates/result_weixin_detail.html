@@ -23,8 +23,8 @@
     <div class="nav">
     	<ul class="searchList">
             <li class="searchItem" data-type="article">技术文章</li>
-            <li class="searchItem current" data-type="video">学习视频</li>
-            <li class="searchItem" data-type="position">岗位信息</li>
+            <li class="searchItem" data-type="video">学习视频</li>
+            <li class="searchItem current" data-type="position">岗位信息</li>
             <li class="searchItem" data-type="job_help">求职帮助</li>
         </ul>
     </div>
@@ -39,14 +39,19 @@
                     {% for hit in all_hits %}
                     <div class="resultItem">
                             <div class="itemHead">
-                                <a href="{{ hit.url }}"  target="_blank" class="title">{% autoescape off %}{{ hit.class_name }}{% endautoescape %}</a>
+                                <a href="{{ hit.url }}"  target="_blank" class="title">{% autoescape off %}{{ hit.position_name }}{% endautoescape %}</a>
                                 <span class="divsion">-</span>
                                 <span class="fileType">
-                                    <span class="mylabel">网站分类：</span>
-                                    <span class="value">{% autoescape off %}{{ hit.first_classify }} >> {{ hit.second_classify }}{% endautoescape %}</span>
+                                    <span class="label">福利：</span>
+                                    <span class="value">{{ hit.welfare }}</span>
                                 </span>
+                                <span class="fileType">
+                                    <span class="label">公司：</span>
+                                    <span class="value">{{ hit.company_name}}</span>
+                                </span>
+
                                 <span class="dependValue">
-                                    <span class="mylabel">搜索得分：</span>
+                                    <span class="label">搜索得分：</span>
                                     <span class="value">{{ hit.score }}</span>
                                 </span>
                             </div>
@@ -59,12 +64,20 @@
                                     <span class="value">{{ hit.data_source }}</span>
                                 </span>
                                 <span class="info">
-                                    <label>推荐度：</label>
-                                    <span class="value">2017-04-23</span>
+                                    <label>薪资范围：</label>
+                                    <span class="value">{{ hit.salary_min }}-{{ hit.salary_max }}</span>
                                 </span>
                                 <span class="info">
-                                    <label>价格：</label>
-                                    <span class="value">{{ hit.price }}</span>
+                                    <label>学历要求：</label>
+                                    <span class="value">{{ hit.education }}</span>
+                                </span>
+                                <span class="info">
+                                    <label>工作年限：</label>
+                                    <span class="value">{{ hit.working_exp }}</span>
+                                </span>
+                                <span class="info">
+                                    <label>工作地点：</label>
+                                    <span class="value">{{ hit.working_place }}</span>
                                 </span>
                             </div>
                         </div>
@@ -95,6 +108,7 @@
             </div>
         </div><!-- End of main -->
     </div><!--End of bd-->
+    <div id="map" style="width: 600px;height:400px;"></div>
 </div>
 
 <div id="foot">Copyright &copy;projectsedu.com 版权所有  E-mail:admin@projectsedu.com</div>
@@ -102,6 +116,8 @@
 <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/global.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/pagination.js' %}"></script>
+<script src="{% static  'js/echarts.min.js' %}"></script>
+<script src="{% static  'js/china.js' %}"></script>
 <script type="text/javascript">
     var search_url = "{% url 'search' %}"
 
@@ -250,4 +266,58 @@
         }
     }
 </script>
+<script>
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('map'));
+
+    // 指定图表的配置项和数据
+    var option = {
+            dataRange: {
+                show:true,
+                            min: {{ map_min_amount }},
+                            max: {{ map_max_amount }},
+                            x: 'left',
+                            y: 'bottom',
+                            color: ['#e0ffff', '#006edd'],
+                            text:['高','低'],           // 文本，默认为数值文本
+                            calculable : true
+            },
+            tooltip:{
+                padding: 0,
+                enterable:true,
+                transitionDuration:1,
+                textStyle : {
+                    color: '#000',
+                    decoration: 'none',
+                },
+                formatter: function (params) {
+                    console.log(params)
+                    var res = '<div style="height:160px;width:300px;border-radius:5px;background:#fff;box-shadow:0 0 10px 5px #aaa"><div style="height:50px;width:100%;border-radius:5px;background:#F8F9F9;border-bottom:1px solid #F0F0F0"><span style="line-height:50px;margin-left:18px">山东省</span><span style="float:right;line-height:50px;margin-right:18px;color:#5396E3;cursor:pointer">点击查看详情</span></div><div style="height:110px;width:100%;border-radius:5px;background:#fff"><div style="padding-left:18px;padding-top:22px"><span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:rgba(92,169,235,1)"></span> <span>有效条数</span><span style="float:right;margin-right:18px">2323万</span></div><div style="padding-left:18px;padding-top:14px"><span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:rgba(92,169,235,1)"></span> <span>质量合格率</span><span style="float:right;margin-right:18px">85%</span></div></div></div>';
+                    return res;
+                }
+            },
+                        series : [
+                            {
+                                name: 'iphone4',
+                                type: 'map',
+                                mapType: 'china',
+                                itemStyle:{
+                                    normal:{label:{show:false}},
+                                    emphasis:{label:{show:true}}
+                                },
+                                data:[
+                                    {% for map_amout_obj in map_amount_list %}
+                                        {% for key, value in map_amout_obj.items %}
+                                            {name: '{{ key }}', value: {{ value }}},
+                                        {% endfor %}
+                                    {% endfor %}
+                                ]
+                            },
+                        ]
+        }
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+
 </html>

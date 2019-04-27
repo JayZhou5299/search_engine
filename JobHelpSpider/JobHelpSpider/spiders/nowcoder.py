@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import time
+import redis
 import re
 import random
 import datetime
@@ -8,16 +9,32 @@ import datetime
 from scrapy import Request
 from urllib import parse
 from w3lib.html import remove_tags
+from scrapy_redis.spiders import RedisSpider
+
 
 from JobHelpSpider.items import JobWantedInformation
 from JobHelpSpider.utils.common import get_md5
+from JobHelpSpider import settings
 from JobHelpSpider.utils.common import remove_t_r_n
 
-class NowcoderSpider(scrapy.Spider):
+
+# class NowcoderSpider(scrapy.Spider):
+class NowcoderSpider(RedisSpider):
     name = 'nowcoder'
     allowed_domains = ['www.nowcoder.com']
-    start_urls = ['https://www.nowcoder.com/discuss?type=2&order=0&pageSize=30&query=&page=1',
-                  'https://www.nowcoder.com/discuss?type=7&order=0&pageSize=30&query=&page=1']
+    redis_key = 'nowcoder:start_urls'
+    # start_urls = ['https://www.nowcoder.com/discuss?type=2&order=0&pageSize=30&query=&page=1',
+    #               'https://www.nowcoder.com/discuss?type=7&order=0&pageSize=30&query=&page=1']
+
+    def __init__(self):
+        """
+        初始化向redis中添加start_urls
+        """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
+        if redis_cli.exists(self.redis_key) == 0:
+            redis_cli.lpush(self.redis_key,
+                            'https://www.nowcoder.com/discuss?type=2&order=0&pageSize=30&query=&page=1',
+                            'https://www.nowcoder.com/discuss?type=7&order=0&pageSize=30&query=&page=1')
 
     def parse(self, response):
         """

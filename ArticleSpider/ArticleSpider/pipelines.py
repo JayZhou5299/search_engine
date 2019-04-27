@@ -11,8 +11,9 @@ from elasticsearch_dsl.connections import connections
 from twisted.enterprise import adbapi
 
 from ArticleSpider.models.es_types import ArticleType
+from ArticleSpider import settings
 
-es = connections.create_connection(hosts=['60.205.224.136'])
+es = connections.create_connection(hosts=[settings.ES_ADDRESS])
 
 
 class ArticlespiderPipeline(object):
@@ -20,23 +21,6 @@ class ArticlespiderPipeline(object):
 
         return item
 
-
-# class MysqlPipeline(object):
-#     """
-#     将数据插入mysql中异步化
-#     """
-#     def __init__(self):
-#         self.conn = pymysql.connect(host='60.205.224.136', user='root', password='123456',
-#                                     db='search_engine_test', charset='utf8')
-#         self.cursor = self.conn.cursor()
-#
-#     def process_item(self, item, spider):
-#         insert_sql = """
-#             insert into tb_technical_articles(url_object_id, url, title, article_type, data_source,
-#             read_num, comment_num, praise_num, collection_num, publish_time, abstract, content)
-#             values (%s, %s, %s, %s, %s, %d, %d, %d, %d, %s, %s, %s)
-#         """
-#         self.cursor.execute(insert_sql)
 
 class MysqlTwistPipeline(object):
     """
@@ -149,7 +133,10 @@ class ElasticSearchPipeline(object):
         article.data_source = item['data_source']
         article.publish_time = item['publish_time']
         article.abstract = item['abstract']
-        article.tags = item['tags']
+        if item['tags']:
+            article.tags = item['tags']
+        else:
+            article.tags = '无'
 
         # 热度计算公式
         article.hot_score = 8 * item['comment_num'] + 3 * item['praise_num'] + 5 * item['collection_num'] + item['read_num']

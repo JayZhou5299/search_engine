@@ -12,7 +12,13 @@ html{*overflow:auto;}
 .inputArea .advanced{position:absolute;font-size:14px;left:500px;top:12px;width:60px;text-decoration:underline;}
 
 /*分界区域，导航*/
-.nav{margin-bottom:24px;height:31px;background:#f9f9f9;border-bottom:1px solid #e0e0e0;padding:5px 0 0 125px;}
+.my-nav{
+    margin-bottom:24px;
+    /*height:31px;*/
+    background:#f9f9f9;
+    border-bottom:1px solid #e0e0e0;
+    padding:5px 0 0 125px;
+}
 .searchList{float:left;padding-left:5px;}
 .searchList .searchItem{float:left;margin-right:15px;font-size:14px;padding:0 3px 2px 3px;cursor:pointer;height:26px; line-height:26px;}
 .searchList .searchItem.current{color:#0080cc;border-bottom:3px solid #9cc813;font-weight:bold;}
@@ -50,7 +56,18 @@ html{*overflow:auto;}
 
 .resultArea{float:left;width:70%;
     padding-right: 5%;
+    position: relative;
     margin-right: 5%;}
+
+.resultArea::after{
+    content: '';
+    position: absolute;
+    width: 1px;
+    background-color: #999999;
+    top: 0;
+    right: 0;
+    height: 100%;
+}
 .resultArea .resultTotal{position:relative;padding-left:30px;margin-bottom:20px;}
 .resultArea .resultTotal .info{color:#9a9a9a;}
 .resultArea .resultTotal .orderOpt{position:absolute;right:50px;}
@@ -87,6 +104,12 @@ html{*overflow:auto;}
 .historyArea h6{margin-bottom:10px;font-weight:bold;}
 .historyArea .historyList{margin-bottom:20px;}
 .historyArea .historyList li{margin-bottom:5px;}
+
+/*热门类别词云图*/
+.my-wordcloud{width: 200px;height: 1000px; float: right;margin-right: 40px}
+
+/*职位地图*/
+.my-map{width: 200px;height: 1000px; float: right;margin-right: 40px}
 
 
 

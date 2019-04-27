@@ -1,27 +1,23 @@
 import json
 import pymysql
-import random
 import numpy as np
 import pymysql.cursors
-import time
 import matplotlib.pyplot as plt
 from snownlp import SnowNLP
 from aip import AipNlp
 from sklearn import preprocessing
 from elasticsearch import Elasticsearch
 
-
-client = Elasticsearch(hosts=['60.205.224.136'])
-
-
 from VideoSpider import settings
+
+es_client = Elasticsearch(hosts=['60.205.224.136'])
+
 
 """ 你的 APPID AK SK """
 APP_ID = '15869518'
 API_KEY = '3MEcyzqMcDul8OUKHIYmfngB'
 SECRET_KEY = 'KDzSqoWS0ZnCtDB5XbiRyVL0TFSqnXlf'
-
-client = AipNlp(APP_ID, API_KEY, SECRET_KEY)
+# client = AipNlp(APP_ID, API_KEY, SECRET_KEY)
 
 
 class SentimentAnalyzer(object):
@@ -84,9 +80,6 @@ class SentimentAnalyzer(object):
                         sentiments, score = self.sentiment_data(text, 1)
                     else:
                         sentiments = self.sentiment_data(text)
-
-                    # with open('sentiments_baidu.txt', 'a') as f:
-                    #     f.write('%s\t%s\n' % (text, sentiments))
                 else:
                     sentiments = 0.5
 
@@ -94,12 +87,9 @@ class SentimentAnalyzer(object):
                 sentiment_score = sentiments * float(score)
                 sentiment_score_list.append(sentiment_score)
 
-            avg_score = np.mean(sentiment_score_list)
-            # 3.将情感分析结果进行加权平均求得分析后的得分
-            res_list.append({'url_object_id': data_obj['url_object_id'],
-                             'sentiment_score': np.mean(sentiment_score_list),
-                             'learner_nums': data_obj['learner_nums']})
-            # time.sleep(random.randint(4, 5))
+            # 3.将情感分析结果进行加权平均求得分析后的得分,前三列分别为url_object_id, sentiment_score, learner_nums
+            res_list.append([data_obj['url_object_id'], np.mean(sentiment_score_list),
+                             data_obj['learner_nums']])
 
         return res_list
 
@@ -129,51 +119,38 @@ class SentimentAnalyzer(object):
         计算推荐度
         :return:
         """
+        # 把数据存到两个列表中，一个存score与learner，另一个存url_object_id
         unhandled_list = list()
         url_object_id_list = list()
         for handled_data_obj in unhandled_data:
-            temp_tuple = (handled_data_obj['sentiment_score'], handled_data_obj['learner_nums'])
-            url_object_id_list.append(handled_data_obj['url_object_id'])
+            temp_tuple = (handled_data_obj[1], handled_data_obj[2])
+            url_object_id_list.append(handled_data_obj[0])
             unhandled_list.append(temp_tuple)
-
-        handled_list = np.array(unhandled_list)
 
         # 由于学习人数没有明显的边界，就用均值方差归一化
         handled_list = preprocessing.scale(unhandled_list)
 
         # 绘制图，看一下点的分布情况
-        plt.scatter(handled_list[:, 0], handled_list[:, 1])
-        plt.show()
+        # plt.scatter(handled_list[:, 0], handled_list[:, 1])
+        # plt.show()
 
+        # 将nparray类型转换为list类型，方便后面index函数的使用
+        handled_list = handled_list.tolist()
         recommend_score_list = list()
+
         # 遍历计算推荐度，并更新到es中
         for handled_obj in handled_list:
-
             # 以5为起始标准，因为归一化的结果有负数
             recommend_score = handled_obj[0] * 0.3 + handled_obj[1] * 0.7 + 5
             recommend_score_list.append(recommend_score)
 
-        plt.scatter(np.ones(len(recommend_score_list)), recommend_score_list)
-        plt.show()
-        pass
-            # client.update(index='learning_video', doc_type='video',
-            #               id=url_object_id_list[handled_list.index(handled_obj)],
-            #               body={'recommend_score': recommend_score})
+            es_id = url_object_id_list[handled_list.index(handled_obj)]
+            es_client.update(index='learning_video', doc_type='video', id=es_id,
+                             body={'doc': {'recommend_score': recommend_score}})
 
-    def normal_li(self):
-        """
-        由于学习人数没有明显的边界，就用均值方差归一化
-        """
-        pass
-
-    def save_data(self, unsaved_data):
-        """
-        保存数据
-        :return:
-        """
-
-
-        pass
+        # 绘制计算后的推荐度分布
+        # plt.scatter(np.ones(len(recommend_score_list)), recommend_score_list)
+        # plt.show()
 
     def entrance(self):
         """
@@ -184,47 +161,47 @@ class SentimentAnalyzer(object):
         raw_data = self.get_data()
         # 进行数据的预处理
         handled_data = self.handle_data(raw_data)
-        # 计算相应的推荐度指标
+        # 计算相应的推荐度指标并存储
         self.calculate_recommend_score(handled_data)
 
-        pass
 
-    def sentiment_data_by_baidu(self, text, flag=0):
-        """
-        通过百度ai平台进行情感打分
-        :param text:
-        :param flag:表示该评论是否有score这个属性，如果没有需要返回score和setiment两个值(1代表没有score)
-        :return:返回的范围为[-1,1]，负数代表消极的
-        """
-        """
-        res_dict的返回类型：
-        {
-            "text":"苹果是一家伟大的公司",
-            "items":[
-                {
-                    "sentiment":2,    //表示情感极性分类结果，0:负向，1:中性，2:正向
-                    "confidence":0.40, //表示分类的置信度
-                    "positive_prob":0.73, //表示属于积极类别的概率
-                    "negative_prob":0.27  //表示属于消极类别的概率
-                }
-            ]
-        }
-        """
-        if len(text) >= 256:
-            text = text[:255]
-        try:
-            res_dict = client.sentimentClassify(text)['items'][0]
-            positive_prob = res_dict['positive_prob']
-        except Exception as e:
-            positive_prob = 0.5
-            print(e)
+    # def sentiment_data_by_baidu(self, text, flag=0):
+    #     """
+    #     通过百度ai平台进行情感打分
+    #     :param text:
+    #     :param flag:表示该评论是否有score这个属性，如果没有需要返回score和setiment两个值(1代表没有score)
+    #     :return:返回的范围为[-1,1]，负数代表消极的
+    #     """
+    #     """
+    #     res_dict的返回类型：
+    #     {
+    #         "text":"苹果是一家伟大的公司",
+    #         "items":[
+    #             {
+    #                 "sentiment":2,    //表示情感极性分类结果，0:负向，1:中性，2:正向
+    #                 "confidence":0.40, //表示分类的置信度
+    #                 "positive_prob":0.73, //表示属于积极类别的概率
+    #                 "negative_prob":0.27  //表示属于消极类别的概率
+    #             }
+    #         ]
+    #     }
+    #     """
+    #     if len(text) >= 256:
+    #         text = text[:255]
+    #     try:
+    #         res_dict = client.sentimentClassify(text)['items'][0]
+    #         positive_prob = res_dict['positive_prob']
+    #     except Exception as e:
+    #         positive_prob = 0.5
+    #         print(e)
+    #
+    #     if flag == 0:
+    #         return positive_prob
+    #
+    #     # 如果该评论没有score这个属性，需要多返回一个score属性
+    #     else:
+    #         return positive_prob, positive_prob * 10
 
-        if flag == 0:
-            return positive_prob
-
-        # 如果该评论没有score这个属性，需要多返回一个score属性
-        else:
-            return positive_prob, positive_prob * 10
 
 if __name__ == '__main__':
     sentiment_analyzer = SentimentAnalyzer()
