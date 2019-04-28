@@ -111,7 +111,10 @@ class ImoocSpider(RedisSpider):
                 page_num = int(re.findall(r'page=(\d*)', response.url)[0])
                 next_url = re.sub(r'page=(\d*)', 'page=%s' % str(page_num+1), response.url)
             else:
-                next_url = '%s?page=%d' % (response.url, 2)
+                # 由于慕课网的翻页有问题，所以需要判断是否能这样翻页
+                next_url_tag = response.css('.page').extract_first()
+                if next_url_tag:
+                    next_url = '%s?page=%d' % (response.url, 2)
 
             yield Request(url=next_url, callback=self.parse)
 
