@@ -7,6 +7,7 @@ import requests
 from scrapy.http import Request
 from scrapy.selector import Selector
 from urllib.parse import urljoin
+from w3lib.html import remove_tags
 from scrapy_redis.spiders import RedisSpider
 
 from VideoSpider.items import VideoItem
@@ -129,7 +130,7 @@ class ImoocSpider(RedisSpider):
             price = response.css('.ori-price::text').extract_first()
             if price:
                 price = price.replace('\t', '').replace('\n', '').replace('\r', '').replace('￥', '').replace('原价', '').strip()
-            class_name = response.css('.title-box h1::text').extract_first()
+            class_name = response.css('.title-box h1').extract_first()
             temp_list = response.css('.nodistance::text').extract()
             learner_nums = temp_list[2]
             category_list = self.get_category_list(url)
