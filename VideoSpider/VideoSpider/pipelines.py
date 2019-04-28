@@ -12,9 +12,10 @@ from twisted.enterprise import adbapi
 from elasticsearch_dsl.connections import connections
 from w3lib.html import remove_tags
 
+from VideoSpider import settings
 from VideoSpider.models.es_types import VideoType
 
-es = connections.create_connection(hosts=['60.205.224.136'])
+es = connections.create_connection(hosts=[settings.ES_ADDRESS])
 
 
 class VideospiderPipeline(object):

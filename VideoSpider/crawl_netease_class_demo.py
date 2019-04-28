@@ -19,18 +19,20 @@ def get_cookies(url):
     browser.quit()
     return cookie_dict
 
+
 def get_json():
-    payload = {"activityId": 0,
-               # "advertiseSearchUuid": "8014f837-0c11-42dc-bf72-e837e94009a1",
-               "frontCategoryId": "480000003131009",
-               "keyword": "",
-               "orderType": 50,
-               "pageIndex": 1,
-               "pageSize": 50,
-               "priceType": -1,
-               "relativeOffset": 0,
-               "searchTimeType": -1,
+    payload = {
+               'activityId': 0,
+               'frontCategoryId': "480000003131009",
+               'keyword': "",
+               'orderType': 50,
+               'pageIndex': 3,
+               'pageSize': 50,
+               'priceType': -1,
+               'relativeOffset': 100,
+               'searchTimeType': -1,
                }
+
     headers = {"Accept": "application/json",
                "Host": "study.163.com",
                "Origin": "https://study.163.com",

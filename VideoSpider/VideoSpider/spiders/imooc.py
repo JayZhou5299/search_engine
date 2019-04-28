@@ -1,27 +1,31 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import re
+import redis
 import json
 import requests
 from scrapy.http import Request
 from scrapy.selector import Selector
 from urllib.parse import urljoin
+from scrapy_redis.spiders import RedisSpider
 
 from VideoSpider.items import VideoItem
 from VideoSpider.utils.common import get_md5
 from VideoSpider import settings
 
 
-class ImoocSpider(scrapy.Spider):
+class ImoocSpider(RedisSpider):
     name = 'imooc'
     allowed_domains = ['www.imooc.com', 'coding.imooc.com']
-    start_urls = []
+    # start_urls = []
+    redis_key = 'imooc:start_urls'
 
     def __init__(self):
         """
         初始化类别与url字典,key为url地址,value为一级分类,二级分类
         """
         # 实战课程的分类列表与url相对路径需要初始化，免费课程可以在detail页面抓取
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
         self.imooc_fee_class_map = settings.IMOOC_MAP
         res = requests.get('https://www.imooc.com')
         selector = Selector(text=res.text)
@@ -33,12 +37,14 @@ class ImoocSpider(scrapy.Spider):
 
             for j in range(len(href_list)):
                 key_url = urljoin('http://www.imooc.com', href_list[j])
-                self.start_urls.append(key_url)
+                redis_cli.lpush(self.redis_key, key_url)
+                # self.start_urls.append(key_url)
 
         # 添加实战课程的url到start_url
         for url in self.imooc_fee_class_map.keys():
             key_url = 'https://coding.imooc.com/?c=%s' % url
-            self.start_urls.append(key_url)
+            redis_cli.lpush(self.redis_key, key_url)
+            # self.start_urls.append(key_url)
 
     def parse(self, response):
         """

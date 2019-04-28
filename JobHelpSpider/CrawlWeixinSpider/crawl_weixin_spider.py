@@ -1,14 +1,26 @@
 import json
+import os
+import re
+import datetime
 import requests
 import time
 import random
 import pymysql
+from scrapy import Selector
+from elasticsearch_dsl.connections import connections
+from w3lib.html import remove_tags
 
-from selenium import webdriver
+
+from JobHelpSpider.utils.common import get_md5
+from JobHelpSpider.utils.common import remove_t_r_n
+from JobHelpSpider.models.es_types import JobWantedInformationType
+from JobHelpSpider import settings
+
+es = connections.create_connection(hosts=[settings.ES_ADDRESS])
 
 WEIXIN_URL = 'https://mp.weixin.qq.com/'
-COOKIE_FILE = '/home/yuzhou/python_file/ArticleSpider/CrawlWeixinSpider/cookie.txt'
-TOKEN_FILE = '/home/yuzhou/python_file/ArticleSpider/CrawlWeixinSpider/token.txt'
+COOKIE_FILE = os.path.join(os.path.abspath('.'), 'cookie.txt')
+TOKEN_FILE = os.path.join(os.path.abspath('.'), 'token.txt')
 
 
 def get_cookie_and_token():
@@ -38,7 +50,7 @@ def get_fake_id(token, cookie):
         'lang': 'zh_CN',
         'f': 'json',
         'ajax': '1',
-        'random': '0.544464898363296',
+        'random': random.random(),
         'query': query_word,
         'begin': '',
         'count': '5',
@@ -49,25 +61,6 @@ def get_fake_id(token, cookie):
     time.sleep(4)
     fake_id = searchbiz_response.json()['list'][0].get('fakeid')
     return fake_id
-
-
-def get_db_conn():
-    return pymysql.connect(host='60.205.224.136',
-                           user='root',
-                           passwd='123456',
-                           db='wyf_sql',
-                           port=3306,
-                           charset="utf8")
-
-
-def insert_franky_fm(conn, id, title, url):
-    sql = "insert into franky_fm(title, url) values '%s', '%s'" % (title, url)
-    try:
-        cursor = conn.cursor()
-        cursor.excute(sql)
-        conn.commit()
-    except Exception as e:
-        print('error')
 
 
 def entrance(query_word):
@@ -84,7 +77,7 @@ def entrance(query_word):
         'lang': 'zh_CN',
         'f': 'json',
         'ajax': '1',
-        'random': '0.5150533231730943',
+        'random': random.random(),
         'action': 'list_ex',
         'begin': '0',
         'count': '5',
@@ -99,7 +92,6 @@ def entrance(query_word):
     page_count = int(int(appmsg_response.json()['app_msg_cnt']) / 5)
     begin = -5
 
-    conn = get_db_conn()
     while begin < page_count:
         appmsg_data['begin'] = str(int(appmsg_data['begin']) + 5)
         appmsg_data['random'] = random.random()
@@ -110,11 +102,76 @@ def entrance(query_word):
         app_msg_list = appmsg_response.json()['app_msg_list']
         # 遍历文章列表，进行存取
         for app_msg_obj in app_msg_list:
-            title = app_msg_obj['title']
-            url = app_msg_obj['link']
-            id = app_msg_obj['appmsgid']
-            print('id:{0}  title:{1}  url:{2}'.format(id, title, url))
-            insert_franky_fm(conn, id, title, url)
+            res = requests.get(app_msg_obj['link'])
+            selector = Selector(text=res.text)
+            title = selector.css('#activity-name::text').extract_first()
+            content = remove_t_r_n(remove_tags(selector.css('#js_content').extract_first()))
+            str_time = re.findall(r'var publish_time = "(\d{4}-\d{2}-\d{2})"', res.text)[0]
+            publish_time = datetime.datetime.strptime(str_time, '%Y-%m-%d').date()
+            data_source = selector.css('#js_name::text').extract_first()
+            if not title or not data_source:
+                continue
+            temp_item = dict()
+            temp_item['url'] = res.url
+            temp_item['url_object_id'] = get_md5(res.url)
+            temp_item['abstract'] = content[:300]
+            temp_item['publish_time'] = publish_time
+            temp_item['title'] = remove_t_r_n(title)
+            temp_item['data_source'] = remove_t_r_n(data_source)
+            es_save(temp_item)
+
+
+def gen_suggests(index, info_tuple):
+    """
+    根据字符串生成搜索建议数组
+    :param index:
+    :param info_tuple:
+    :return:
+    """
+    used_words = set()
+    suggests = []
+    for text, weight in info_tuple:
+        if text:
+            # 调用es的analyze接口分析字符串
+            words = es.indices.analyze(index=index, analyzer='ik_max_word',
+                                        params={'filter':['lowercase']}, body=text)
+
+            # 将长度为小于等于1的词过滤掉，这种词没有意义
+            analyzed_words = set([r['token'] for r in words['tokens'] if len(r['token']) > 1])
+
+            # 将之前用过的词去掉
+            new_words = analyzed_words - used_words
+        else:
+            new_words = set()
+
+        # 如果存在新词就将其添加到建议数组中，在used_words中添加这些词(做并集)
+        if new_words:
+            suggests.append({'input': list(new_words), 'weight': weight})
+            used_words = used_words.union(new_words)
+
+    return suggests
+
+
+def es_save(item):
+    """
+    将item转换为es的数据格式
+    :return:
+    """
+    # 初始化一个es的document
+    job_wanted_information = JobWantedInformationType()
+    # 将该条document的id设置为url_object_id
+    job_wanted_information.meta.id = item['url_object_id']
+    job_wanted_information.url = item['url']
+    job_wanted_information.title = item['title']
+    job_wanted_information.data_source = item['data_source']
+    job_wanted_information.abstract = item['abstract']
+    job_wanted_information.publish_time = item['publish_time']
+    job_wanted_information.suggest = gen_suggests(JobWantedInformationType._doc_type.index,
+                                                       ((job_wanted_information.title, 10),
+                                                        (job_wanted_information.abstract, 6)))
+
+    # 调用save方法直接存储到es中
+    job_wanted_information.save()
 
 
 if __name__ == '__main__':

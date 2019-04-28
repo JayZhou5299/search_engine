@@ -68,8 +68,11 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
+SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 ITEM_PIPELINES = {
-   'VideoSpider.pipelines.MysqlTwistPipeline': 300,
+   'scrapy_redis.pipelines.RedisPipeline': 300,
+   'VideoSpider.pipelines.MysqlTwistPipeline': 250,
    'VideoSpider.pipelines.ElasticSearchPipeline': 200,
 }
 
@@ -197,3 +200,12 @@ IMOOC_MAP = {'vuejs': '前端开发\tVue.js', 'miniprogram': '前端开发\t小�
 
 # ES_ADDRESS = '60.205.224.136'
 ES_ADDRESS = '39.96.16.6'
+
+
+REDIS_ADDRESS = '60.205.224.136'
+
+# slave端redis_url配置
+# REDIS_URL = 'redis://60.205.224.136:6379'
+# master端redis配置
+# REDIS_HOST = 'localhost'
+# REDIS_PORT = 6379

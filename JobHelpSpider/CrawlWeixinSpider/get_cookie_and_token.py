@@ -31,9 +31,9 @@ def entrance():
     real_url = browser.current_url
     # print(real_url)
     # 将token提取并写入token.txt
-    # token = re.findall(r'.*token=(\d*)', real_url)[0]
-    # with open('token.txt', 'w') as f:
-    #     f.write(token)
+    token = re.findall(r'.*token=(\d*)', real_url)[0]
+    with open('token.txt', 'w') as f:
+        f.write(token)
     # 等待10s关闭chrome
     time.sleep(10)
     browser.quit()

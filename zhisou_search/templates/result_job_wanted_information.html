@@ -20,12 +20,12 @@
             <input type="button" class="searchButton" onclick="add_search()"/>
         </div>
     </div>
-    <div class="nav">
-    	<ul class="searchList">
-            <li class="searchItem" data-type="article">技术文章</li>
-            <li class="searchItem" data-type="video">学习视频</li>
-            <li class="searchItem" data-type="position">岗位信息</li>
-            <li class="searchItem current" data-type="job_help">求职帮助</li>
+    <div class="my-nav">
+    	<ul class="nav nav-pills my-u">
+                <li data-type="article" role="presentation"><a href="#">技术文章</a></li>
+                <li data-type="video" role="presentation"><a href="#">学习视频</a></li>
+                <li data-type="position" role="presentation"><a href="#">岗位信息</a></li>
+                <li data-type="job_help" role="presentation" class="active"><a href="#">求职帮助</a></li>
         </ul>
     </div>
 	<div id="bd" class="ue-clear">
@@ -63,27 +63,9 @@
                     {% endfor %}
                 </div>
                 <!-- 分页 -->
-                <div class="pagination ue-clear"></div>
+                <div class="pagination ue-clear">eee</div>
                 <!-- 相关搜索 -->
-                
-                
-                
-            </div>
-            <div class="historyArea">
-            	<div class="hotSearch">
-                	<h6>热门搜索</h6>
-                    <ul class="historyList">
-                        {% for search_word in topn_search %}
-                            <li><a href="/search?q={{ search_word }}">{{ search_word }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="mySearch">
-                	<h6>我的搜索</h6>
-                    <ul class="historyList">
 
-                    </ul>
-                </div>
             </div>
         </div><!-- End of main -->
     </div><!--End of bd-->
