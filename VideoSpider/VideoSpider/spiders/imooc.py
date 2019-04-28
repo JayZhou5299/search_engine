@@ -128,7 +128,7 @@ class ImoocSpider(RedisSpider):
         if response.meta['tag'] == 'fee':
             price = response.css('.ori-price::text').extract_first()
             if price:
-                price = price.replace('\t', '').replace('\n', '').replace('\r', '').replace('￥', '').strip()
+                price = price.replace('\t', '').replace('\n', '').replace('\r', '').replace('￥', '').replace('原价', '').strip()
             class_name = response.css('.title-box h1::text').extract_first()
             temp_list = response.css('.nodistance::text').extract()
             learner_nums = temp_list[2]
@@ -139,7 +139,7 @@ class ImoocSpider(RedisSpider):
             institution = response.css('.nickname::text').extract_first()
             first_classify = response.meta['first_classify']
             second_classify = response.meta['second_classify']
-            evaluation_score = temp_list[3].replace('分', '')
+            evaluation_score = temp_list[3].replace('分', '').replace('%', '')
 
             class_id = re.findall(r'class/(\d*)', response.url)
             if class_id:
@@ -177,7 +177,7 @@ class ImoocSpider(RedisSpider):
             class_id = re.findall(r'learn/(\d*)', response.url)[0]
             evaluation_score = response.css('.meta-value::text').extract()
             if evaluation_score:
-                evaluation_score = evaluation_score[2].replace('%', '')
+                evaluation_score = evaluation_score[2]
             evaluation_content = self.get_evaluation_and_content(class_id)
 
         # 赋值item相应属性
