@@ -79,6 +79,11 @@
 <script type="text/javascript">
     var search_url = "{% url 'search' %}"
 
+    $('.my-u').on('click', 'li', function(){
+		$('.my-u li').removeClass('active');
+		$(this).addClass('active');
+	});
+
 	$('.searchList').on('click', '.searchItem', function(){
 		$('.searchList .searchItem').removeClass('current');
 		$(this).addClass('current');	
@@ -125,7 +130,7 @@
     });
 	var key_words = '{{ key_words }}'
 	//分页
-	$(".pagination").pagination({{ total_nums }}, {
+	$(".my-pagination").pagination({{ total_nums }}, {
 		current_page :{{ page|add:'-1' }}, //当前页码
 		items_per_page :10,
 		display_msg :true,

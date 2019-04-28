@@ -105,6 +105,11 @@
 <script type="text/javascript">
     var search_url = "{% url 'search' %}"
 
+    $('.my-u').on('click', 'li', function(){
+		$('.my-u li').removeClass('active');
+		$(this).addClass('active');
+	});
+
 	$('.searchList').on('click', '.searchItem', function(){
 		$('.searchList .searchItem').removeClass('current');
 		$(this).addClass('current');	

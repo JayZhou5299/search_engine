@@ -105,6 +105,12 @@
 <script type="text/javascript" src="{% static 'js/pagination.js' %}"></script>
 <script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
 <script type="text/javascript">
+
+    $('.my-u').on('click', 'li', function(){
+		$('.my-u li').removeClass('active');
+		$(this).addClass('active');
+	});
+
     function createRandomItemStyle() {
         return {
             normal: {

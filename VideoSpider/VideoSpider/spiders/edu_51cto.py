@@ -1,32 +1,43 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import requests
+import redis
 import re
+import random
+import time
 import json
 
 from scrapy.http import Request
 from scrapy.selector import Selector
 from w3lib.html import remove_tags
+from scrapy_redis.spiders import RedisSpider
 
 from VideoSpider.items import VideoItem
 from VideoSpider.utils.common import get_md5
+from VideoSpider import settings
 
 
-class Edu51ctoSpider(scrapy.Spider):
+class Edu51ctoSpider(RedisSpider):
     """
     51cto学院爬虫
     """
     name = 'edu_51cto'
     allowed_domains = ['edu.51cto.com']
-    start_urls = []
+    # start_urls = []
+    redis_key = 'edu_51cto:start_urls'
 
     def __init__(self):
         """
         初始化相关start_urls
         """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
         res = requests.get('https://edu.51cto.com/')
         selector = Selector(text=res.text)
-        self.start_urls = selector.css('.ins.clearfix2 .items_cs dd a::attr(href)').extract()
+
+        # 将start_urls插入到redis中
+        start_urls = selector.css('.ins.clearfix2 .items_cs dd a::attr(href)').extract()
+        for start_url in start_urls:
+            redis_cli.lpush(start_url)
 
     def parse(self, response):
         """
@@ -37,7 +48,7 @@ class Edu51ctoSpider(scrapy.Spider):
         crawl_urls = response.css('.cList h3 a::attr(href)').extract()
         for crawl_url in crawl_urls:
             yield Request(url=crawl_url, callback=self.parse_detail)
-
+        time.sleep(random.random(1, 4))
         next_url = response.css('.next a::attr(href)').extract_first()
         if next_url:
             yield Request(url=next_url, callback=self.parse)
@@ -50,7 +61,6 @@ class Edu51ctoSpider(scrapy.Spider):
         """
         edu_51cto_item = VideoItem()
         url = response.url
-        category_list = list()
         course_id = re.findall(r'course/(\d*)', url)
         # 如果匹配不成功直接返回0和none即可
         if course_id:
@@ -123,7 +133,6 @@ class Edu51ctoSpider(scrapy.Spider):
         edu_51cto_item['evaluation_content'] = evaluation_content
 
         yield edu_51cto_item
-        pass
 
     def get_category(self, course_id):
         """
@@ -131,6 +140,7 @@ class Edu51ctoSpider(scrapy.Spider):
         :param url:
         :return:
         """
+        time.sleep(1)
         url_model = 'https://edu.51cto.com/center/course/index/lesson-list?page=%d&size=20&id=%s'
         category_list = list()
         page = 1
@@ -177,5 +187,3 @@ class Edu51ctoSpider(scrapy.Spider):
                 break
 
         return len(content_list), content_list
-
-
