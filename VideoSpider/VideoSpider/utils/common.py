@@ -14,13 +14,14 @@ def get_md5(url):
     m.update(url)
     return m.hexdigest()
 
+
 def remove_t_r_n(content):
     """
     去除\t,\r,\n等字符
     :param content:
     :return:
     """
-    return content.replace('\t', '').replace('\r', '').replace('\n', '')
+    return content.replace('\t', '').replace('\r', '').replace('\n', '').strip()
 
 
 if __name__ == '__main__':

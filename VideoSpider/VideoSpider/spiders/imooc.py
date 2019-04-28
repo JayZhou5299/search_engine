@@ -13,6 +13,7 @@ from scrapy_redis.spiders import RedisSpider
 from VideoSpider.items import VideoItem
 from VideoSpider.utils.common import get_md5
 from VideoSpider import settings
+from VideoSpider.utils.common import remove_t_r_n
 
 
 class ImoocSpider(RedisSpider):
@@ -130,7 +131,7 @@ class ImoocSpider(RedisSpider):
             price = response.css('.ori-price::text').extract_first()
             if price:
                 price = price.replace('\t', '').replace('\n', '').replace('\r', '').replace('￥', '').replace('原价', '').strip()
-            class_name = response.css('.title-box h1').extract_first()
+            class_name = remove_t_r_n(remove_tags(response.css('.title-box h1').extract_first()))
             temp_list = response.css('.nodistance::text').extract()
             learner_nums = temp_list[2]
             category_list = self.get_category_list(url)
