@@ -177,7 +177,7 @@ class ImoocSpider(RedisSpider):
             class_id = re.findall(r'learn/(\d*)', response.url)[0]
             evaluation_score = response.css('.meta-value::text').extract()
             if evaluation_score:
-                evaluation_score = evaluation_score[2]
+                evaluation_score = evaluation_score[2].replace('%', '')
             evaluation_content = self.get_evaluation_and_content(class_id)
 
         # 赋值item相应属性
@@ -195,11 +195,10 @@ class ImoocSpider(RedisSpider):
         imooc_item['first_classify'] = first_classify
         imooc_item['second_classify'] = second_classify
         imooc_item['evaluation_person'] = int(evaluation_person)
-        imooc_item['evaluation_score'] = float(evaluation_score) * 10
+        imooc_item['evaluation_score'] = float(evaluation_score) / 10
         imooc_item['evaluation_content'] = evaluation_content
 
         yield imooc_item
-        pass
 
     def get_category_list(self, url):
         """
