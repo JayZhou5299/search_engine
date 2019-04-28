@@ -148,7 +148,7 @@ class ElasticSearchPipeline(object):
                                           ((video.class_name, 10), (video.first_classify, 3),
                                            (video.second_classify, 2)))
 
-        with open('/Users/hanyuzhou/scrapy_redis_video.txt', 'w') as f:
+        with open('/home/yuzhou/scrapy_redis_video.txt', 'w') as f:
             f.write('%s\t%s\n' % (item['url'], item['class_name']))
 
         # 调用save方法直接存储到es中
