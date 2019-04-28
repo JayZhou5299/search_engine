@@ -38,14 +38,14 @@ class ImoocSpider(RedisSpider):
             for j in range(len(href_list)):
                 key_url = urljoin('http://www.imooc.com', href_list[j])
                 # slave节点需要将下面的push操作注释掉，否则将会重复添加start_urls
-                redis_cli.lpush(self.redis_key, key_url)
+                # redis_cli.lpush(self.redis_key, key_url)
                 # self.start_urls.append(key_url)
 
         # 添加实战课程的url到start_url
         for url in self.imooc_fee_class_map.keys():
             key_url = 'https://coding.imooc.com/?c=%s' % url
             # slave节点需要将下面的push操作注释掉，否则将会重复添加start_urls
-            redis_cli.lpush(self.redis_key, key_url)
+            # redis_cli.lpush(self.redis_key, key_url)
             # self.start_urls.append(key_url)
 
     def parse(self, response):
