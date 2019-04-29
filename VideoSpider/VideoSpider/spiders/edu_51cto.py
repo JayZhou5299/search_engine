@@ -34,7 +34,7 @@ class Edu51ctoSpider(RedisSpider):
         res = requests.get('https://edu.51cto.com/')
         selector = Selector(text=res.text)
 
-        # 将start_urls插入到redis中
+        # 将start_urls插入到redis中，slave端需要把这些注释掉，否则会重复抓取
         start_urls = selector.css('.ins.clearfix2 .items_cs dd a::attr(href)').extract()
         for start_url in start_urls:
             redis_cli.lpush(start_url)

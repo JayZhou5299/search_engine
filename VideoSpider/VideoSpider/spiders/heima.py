@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import re
+import redis
 import json
 import requests
 
@@ -10,12 +11,22 @@ from w3lib.html import remove_tags
 
 from VideoSpider.items import VideoItem
 from VideoSpider.utils.common import get_md5
+from VideoSpider import settings
 
 
 class HeimaSpider(scrapy.Spider):
     name = 'heima'
     allowed_domains = ['www.itheima.com', 'yun.itheima.com']
-    start_urls = ['http://yun.itheima.com/course/']
+    # start_urls = ['http://yun.itheima.com/course/']
+    redis_key = 'heima:start_urls'
+
+    def __init__(self):
+        """
+        初始化start_urls到redis
+        """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
+        if redis_cli.exists('heima:start_urls') == 0:
+            redis_cli.lpush('http://yun.itheima.com/course/')
 
     def parse(self, response):
         """
@@ -104,11 +115,10 @@ class HeimaSpider(scrapy.Spider):
         heima_item['class_name'] = class_name
         heima_item['learner_nums'] = int(learner_nums)
         heima_item['abstract'] = abstract
-        heima_item['data_source'] = 'heima'
+        heima_item['data_source'] = '黑马程序员'
         heima_item['institution'] = '黑马程序员'
         heima_item['first_classify'] = first_classify
         heima_item['second_classify'] = second_classify
         heima_item['evaluation_content'] = evaluation_content
 
         yield heima_item
-        pass
