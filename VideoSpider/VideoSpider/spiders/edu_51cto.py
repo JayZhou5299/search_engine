@@ -35,9 +35,9 @@ class Edu51ctoSpider(RedisSpider):
         selector = Selector(text=res.text)
 
         # 将start_urls插入到redis中，slave端需要把这些注释掉，否则会重复抓取
-        start_urls = selector.css('.ins.clearfix2 .items_cs dd a::attr(href)').extract()
-        for start_url in start_urls:
-            redis_cli.lpush(self.redis_key, start_url)
+        # start_urls = selector.css('.ins.clearfix2 .items_cs dd a::attr(href)').extract()
+        # for start_url in start_urls:
+        #     redis_cli.lpush(self.redis_key, start_url)
 
     def parse(self, response):
         """
@@ -48,7 +48,7 @@ class Edu51ctoSpider(RedisSpider):
         crawl_urls = response.css('.cList h3 a::attr(href)').extract()
         for crawl_url in crawl_urls:
             yield Request(url=crawl_url, callback=self.parse_detail)
-        time.sleep(random.random(1, 4))
+        time.sleep(random.randint(1, 4))
         next_url = response.css('.next a::attr(href)').extract_first()
         if next_url:
             yield Request(url=next_url, callback=self.parse)
