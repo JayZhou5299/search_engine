@@ -3,6 +3,8 @@ import scrapy
 import re
 import redis
 import json
+import time
+import random
 import requests
 
 from urllib import parse
@@ -39,6 +41,7 @@ class HeimaSpider(RedisSpider):
         # 获取起始url
         start_url_list = response.css('.kind a::attr(href)').extract()
         for start_url_obj in start_url_list:
+            time.sleep(random.randint(2, 5))
             yield Request(url=parse.urljoin('http://yun.itheima.com', start_url_obj),
                           callback=self.parse_crawl_list)
 
@@ -50,11 +53,13 @@ class HeimaSpider(RedisSpider):
         """
         crawl_url_list = response.css('.bdtxt a::attr(href)').extract()
         for crawl_url_obj in crawl_url_list:
+            time.sleep(random.randint(2, 4))
             yield Request(url=parse.urljoin('http://yun.itheima.com', crawl_url_obj),
                           callback=self.parse_detail)
 
         next_url = response.css('.next::attr(href)').extract_first()
         if next_url:
+            time.sleep(random.randint(2, 4))
             yield Request(url=parse.urljoin('http://yun.itheima.com', next_url),
                           callback=self.parse_crawl_list)
 
@@ -71,6 +76,7 @@ class HeimaSpider(RedisSpider):
                 'start': start_num * 5,
                 'cid': cid,
             }
+            time.sleep(random.randint(1))
             res = requests.post('http://yun.itheima.com/course/getcommentajax.html', data)
             if res.text:
                 json_dict = json.loads(res.text)
