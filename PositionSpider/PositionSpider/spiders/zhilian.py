@@ -21,15 +21,16 @@ from PositionSpider import settings
 class ZhilianSpider(RedisSpider):
     name = 'zhilian'
     allowed_domains = ['www.zhaopin.com', 'jobs.zhaopin.com', 'fe-api.zhaopin.com']
-    start_urls = ['http://www.zhaopin.com/']
+    # start_urls = ['http://www.zhaopin.com/']
+    redis_key = 'zhilian:start_urls'
 
     def __init__(self):
         """
         初始化向redis中添加start_urls
         """
         redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
-        if redis_cli.exists(self.redis_key) == 0:
-            redis_cli.lpush(self.redis_key, 'http://www.zhaopin.com/')
+        # master端开启即可
+        # redis_cli.lpush(self.redis_key, 'http://www.zhaopin.com/')
 
     def parse(self, response):
         """
