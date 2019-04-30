@@ -6,6 +6,7 @@ import scrapy
 import re
 import time
 import json
+import redis
 import random
 import requests
 from scrapy.http import Request
@@ -13,29 +14,38 @@ from fake_useragent import UserAgent
 from urllib import request
 from http import cookiejar
 
+from scrapy_redis.spiders import RedisSpider
+
+
 from VideoSpider.items import VideoItem
 from VideoSpider.utils.common import get_md5
+from VideoSpider import settings
 
 
 GET_CATEGORY_URL = 'https://ke.qq.com/cgi-bin/get_cat_info?bkn=&r=0'
 
 
-class TecentClassSpider(scrapy.Spider):
+class TecentClassSpider(RedisSpider):
     name = 'tencent_class'
     allowed_domains = ['ke.qq.com']
     # start_urls = ['https://ke.qq.com/course/list?mt=1001&st=2002&tt=3007']
-    start_urls = []
+    # start_urls = []
+    redis_key = 'tencent_class:start_urls'
 
     def __init__(self):
         """
         获取课程的目录信息
-
         """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
+
         self.category_dict = dict()
         self.get_category_dict()
         self.ua = UserAgent()
+
+        # master端需要打开下面的循环
         for relative_url in self.category_dict.keys():
-            self.start_urls.append('https://ke.qq.com/course/list?mt=1001%s' % relative_url)
+            redis_cli.lpush(self.redis_key, ('https://ke.qq.com/course/list?mt=1001%s' % relative_url))
+            # self.start_urls.append('https://ke.qq.com/course/list?mt=1001%s' % relative_url)
 
     def get_category_dict(self):
         """

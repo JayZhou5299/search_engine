@@ -8,13 +8,15 @@ import requests
 from urllib import parse
 from scrapy import Request
 from w3lib.html import remove_tags
+from scrapy_redis.spiders import RedisSpider
+
 
 from VideoSpider.items import VideoItem
 from VideoSpider.utils.common import get_md5
 from VideoSpider import settings
 
 
-class HeimaSpider(scrapy.Spider):
+class HeimaSpider(RedisSpider):
     name = 'heima'
     allowed_domains = ['www.itheima.com', 'yun.itheima.com']
     # start_urls = ['http://yun.itheima.com/course/']
@@ -25,8 +27,8 @@ class HeimaSpider(scrapy.Spider):
         初始化start_urls到redis
         """
         redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
-        if redis_cli.exists('heima:start_urls') == 0:
-            redis_cli.lpush('http://yun.itheima.com/course/')
+        # master端需要将这个打开
+        # redis_cli.lpush('http://yun.itheima.com/course/')
 
     def parse(self, response):
         """

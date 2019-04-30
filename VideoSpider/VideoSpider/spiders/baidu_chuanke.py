@@ -4,10 +4,11 @@ import re
 import requests
 import random
 import time
+import redis
 import json
 from scrapy.http import Request
 from scrapy.selector import Selector
-from scrapy.http import HtmlResponse
+from scrapy_redis.spiders import RedisSpider
 
 
 from VideoSpider import settings
@@ -15,19 +16,24 @@ from VideoSpider.utils.common import get_md5
 from VideoSpider.items import VideoItem
 
 
-class BaiduChuankeSpider(scrapy.Spider):
+class BaiduChuankeSpider(RedisSpider):
     name = 'baidu_chuanke'
     allowed_domains = ['chuanke.baidu.com']
-    start_urls = []
+    # start_urls = []
+    redis_key = 'baidu_chuanke:start_urls'
 
     def __init__(self):
         """
         初始化目录字典，key为相对url，value为一级目录和二级目录(以\t分割)
         """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
+
         self.category_dict = settings.BAIDU_CHUANKE_MAP
-        self.start_urls = ['https://chuanke.baidu.com/course/%s_____.html'
+        start_urls = ['https://chuanke.baidu.com/course/%s_____.html'
                            % category_obj for category_obj in self.category_dict.keys()]
-        # self.start_urls = [self.start_urls[2], self.start_urls[4]]
+        # master端将这个循环打开
+        # for start_url in start_urls:
+        #     redis_cli.lpush(self.redis_key, start_url)
 
     def parse(self, response):
         """
