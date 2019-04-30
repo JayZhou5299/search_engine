@@ -76,7 +76,7 @@ class HeimaSpider(RedisSpider):
                 'start': start_num * 5,
                 'cid': cid,
             }
-            time.sleep(random.randint(1))
+            time.sleep(1)
             res = requests.post('http://yun.itheima.com/course/getcommentajax.html', data)
             if res.text:
                 json_dict = json.loads(res.text)
