@@ -43,8 +43,8 @@ class TecentClassSpider(RedisSpider):
         self.ua = UserAgent()
 
         # master端需要打开下面的循环
-        for relative_url in self.category_dict.keys():
-            redis_cli.lpush(self.redis_key, ('https://ke.qq.com/course/list?mt=1001%s' % relative_url))
+        # for relative_url in self.category_dict.keys():
+        #     redis_cli.lpush(self.redis_key, ('https://ke.qq.com/course/list?mt=1001%s' % relative_url))
             # self.start_urls.append('https://ke.qq.com/course/list?mt=1001%s' % relative_url)
 
     def get_category_dict(self):
