@@ -30,7 +30,7 @@ class HeimaSpider(RedisSpider):
         """
         redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
         # master端需要将这个打开
-        redis_cli.lpush(self.redis_key, 'http://yun.itheima.com/course/')
+        # redis_cli.lpush(self.redis_key, 'http://yun.itheima.com/course/')
 
     def parse(self, response):
         """
