@@ -1,6 +1,6 @@
 @charset "utf-8";
 html{*overflow:auto;}
-#hd{padding:10px 10px 0px 10px; height: 55px;}
+#hd{padding:10px 10px 0px 4px; height: 55px;}
 #bd{margin-bottom:40px;}
 .logo{float:left;height:38px;background-size: auto 38px;}
 /*input搜索区域*/
@@ -13,7 +13,7 @@ html{*overflow:auto;}
 
 /*分界区域，导航*/
 .my-nav{
-    margin-bottom:24px;
+    margin-bottom:15px;
     /*height:31px;*/
     background:#f9f9f9;
     border-bottom:1px solid #e0e0e0;
@@ -68,7 +68,7 @@ html{*overflow:auto;}
     right: 0;
     height: 100%;
 }
-.resultArea .resultTotal{position:relative;padding-left:30px;margin-bottom:20px;}
+.resultArea .resultTotal{position:relative;padding-left:30px;margin-bottom:14px;}
 .resultArea .resultTotal .info{color:#9a9a9a;}
 .resultArea .resultTotal .orderOpt{position:absolute;right:50px;}
 .resultArea .resultTotal .orderOpt a{margin-right:10px;color:#0080cc;}
@@ -76,7 +76,7 @@ html{*overflow:auto;}
 /*搜索结果列表区域*/
 .resultArea .resultList{padding-left:30px;}
 .resultArea .resultList .resultItem{margin-bottom:20px;}
-.resultArea .resultList .resultItem{margin-bottom:30px;}
+.resultArea .resultList .resultItem{margin-bottom:20px;}
 .resultArea .resultList .itemHead{margin-bottom:5px;color:#767676;} 
 .resultArea .resultList .itemHead .keyWord{color:#d90909;}
 .resultArea .resultList .itemBody .keyWord{color:#d90909;}
@@ -122,8 +122,10 @@ html{*overflow:auto;}
 /*立即搜索样式*/
 .subfieldContent .search{margin:45px 0 0 135px;width:130px;height:36px;background:url(../img/btnbg.png); font-weight:bold;border:none;border:1px solid #bfbfbf;line-height:36px;}
 /*联想下拉区域*/
-.inputArea .dataList{display:none;position:absolute;left:0;top:42px;*top:43px;width:550px;padding:5px 0;background:#fff;border:1px solid #bfbfbf;border-top:none;}
+.inputArea .dataList{display:none;position:absolute;left:0;top:42px;*top:43px;width: 495px;padding:5px 0;background:#fff;border:1px solid #bfbfbf;border-top:none;margin-left: 140px}
 .inputArea .dataList li{padding:2px 15px;font-size:14px;}
 .inputArea .dataList li:hover{background:#f0f0f0;color:#0080cc;font-weight:bold;}
 
 
+/*输入框相关调整*/
+.my-result-input-group{padding-left: 0px !important;}

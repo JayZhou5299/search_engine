@@ -1,9 +1,9 @@
 @charset "utf-8";
 html{*overflow:auto;}
-#main{width:730px;margin:75px auto 0;padding-left: 50px;}
+#main{width:730px;margin:75px auto 0;padding-left: 50px; margin-top: 115px !important;}
 #main h1.title{width:600px;}
 #bd{margin-bottom:20px;}
-.logo.large{margin:0px auto 10px auto;width:380px;height:120px;background: url(../img/logo.png) no-repeat center center;margin-left: 80px}
+.logo.large{margin:0px auto 10px auto;width:500px;height:140px;background: url(../img/logo.png) no-repeat center center;margin-left: 80px}
 
 /*nav样式*/
 .nav{margin-bottom:10px;}
@@ -18,10 +18,10 @@ html{*overflow:auto;}
 /*高级搜索*/
 .inputArea .advanced{position:absolute;font-size:14px;left:674px;top:12px;text-decoration:underline;}
 /*联想下拉区域*/
-.inputArea .dataList{top:37px;*top:43px;width:430px;padding:5px 0;background:#fff;border:1px solid #bfbfbf;border-top:none;margin-left: 15px}
+.inputArea .dataList{top:37px;*top:43px;width:430px;padding:5px 0;background:#fff;border:1px solid #bfbfbf;border-top:none;margin-left: 55px}
 .inputArea .dataList li{font-size:14px;}
 .inputArea .dataList li:hover{background:#f0f0f0;color:#0080cc;font-weight:bold;}
-.my-ul{padding-bottom: 20px;padding-left: 10px !important;}
+.my-ul{padding-bottom: 20px;padding-left: 65px !important;}
 
 /*搜索历史区域*/
 .historyArea{margin:0 auto;width:485px;}
@@ -33,3 +33,6 @@ html{*overflow:auto;}
 .foot{position:absolute;bottom:0px;width:100%;}
 .foot .wrap{margin:0 auto;}
 .foot .copyright{position:relative;top:-35px;color:#ababab;text-align:center;}
+
+/*输入框*/
+.my-input-group{margin-left: 40px}

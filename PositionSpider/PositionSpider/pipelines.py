@@ -72,10 +72,10 @@ class MysqlTwistPipeline(object):
         :return:
         """
         insert_sql = """
-            replace into tb_position_information(url_object_id, working_place, job_classify)
-            values ('%s', '%s', '%s')
+            replace into tb_position_information(url_object_id, working_place, job_classify, position_num)
+            values ('%s', '%s', '%s', '%s')
         """
-        final_sql = insert_sql % (item['url_object_id'], item['working_place'], item['job_classify'])
+        final_sql = insert_sql % (item['url_object_id'], item['working_place'], item['job_classify'], item['position_num'])
         # print(final_sql)
         cursor.execute(final_sql)
 
@@ -141,6 +141,10 @@ class ElasticSearchPipeline(object):
         # 传入的元组需要按权值从大到小排列
         position.suggest = self.gen_suggests(PositionType._doc_type.index,
                                           ((position.position_name, 10), (position.company_name, 8)))
+
+        # 将相关的信息写入文件中查看分布式部署是否正常
+        with open('/home/yuzhou/scrapy_redis_position.txt', 'a') as f:
+            f.write('url:%s,title:%s\n' % (item['url'], item['position_name']))
 
         # 调用save方法直接存储到es中
         position.save()

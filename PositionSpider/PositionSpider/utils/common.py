@@ -20,7 +20,7 @@ def remove_r_n_t(string):
     :param string:
     :return:
     """
-    return string.replace('\r', '').replace('\t', '').replace('\n', '')
+    return string.replace('\r', '').replace('\t', '').replace('\n', '').strip()
 
 
 if __name__ == '__main__':

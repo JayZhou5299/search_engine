@@ -2,19 +2,34 @@
 import scrapy
 import json
 import re
-import datetime
 import time
 import requests
 import random
+import redis
 
 from scrapy.http import Request
 from PositionSpider.items import PositionItem
 from PositionSpider.utils.common import get_md5
+from w3lib.html import remove_tags
+from scrapy_redis.spiders import RedisSpider
 
-class ZhilianSpider(scrapy.Spider):
+
+from PositionSpider.utils.common import remove_r_n_t
+from PositionSpider import settings
+
+
+class ZhilianSpider(RedisSpider):
     name = 'zhilian'
     allowed_domains = ['www.zhaopin.com', 'jobs.zhaopin.com', 'fe-api.zhaopin.com']
     start_urls = ['http://www.zhaopin.com/']
+
+    def __init__(self):
+        """
+        初始化向redis中添加start_urls
+        """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
+        if redis_cli.exists(self.redis_key) == 0:
+            redis_cli.lpush(self.redis_key, 'http://www.zhaopin.com/')
 
     def parse(self, response):
         """
@@ -30,7 +45,6 @@ class ZhilianSpider(scrapy.Spider):
         # 只需要爬取互联网相关的即可
         crawl_div_node = response.css('.zp-jobNavigater__pop--container')[0]
         crawl_name_list = crawl_div_node.css('a::text').extract()
-        crawl_name_list = ['PHP']
 
         for crawl_name_obj in crawl_name_list:
             # 用来获取数据总条数
@@ -42,7 +56,8 @@ class ZhilianSpider(scrapy.Spider):
                 total_num = json_dict['data']['numTotal']
                 result_list = json_dict['data']['results']
                 for result_obj in result_list:
-                    yield Request(url=result_obj['positionURL'], callback=self.parse_detail)
+                    yield Request(url=result_obj['positionURL'], callback=self.parse_detail,
+                                  meta={'job_classify': crawl_name_obj})
 
                 # 从最后一页向前遍历解析
                 if total_num:
@@ -54,7 +69,8 @@ class ZhilianSpider(scrapy.Spider):
                         else:
                             request_url = crawl_url_model % (page_end * 90, crawl_name_obj,
                                                              random.random(), random.random())
-                            yield Request(url=request_url, callback=self.parse_crawl_list)
+                            yield Request(url=request_url, callback=self.parse_crawl_list,
+                                          meta={'job_classify': crawl_name_obj})
                             page_end -= 1
 
     def parse_crawl_list(self, response):
@@ -68,7 +84,8 @@ class ZhilianSpider(scrapy.Spider):
             result_list = json_dict['data']['results']
             for result_obj in result_list:
                 # time.sleep(random.randint(1, 5))
-                yield Request(url=result_obj['positionURL'], callback=self.parse_detail)
+                yield Request(url=result_obj['positionURL'], callback=self.parse_detail,
+                              meta={'job_classify': response.meta['job_classify']})
 
     def parse_detail(self, response):
         """
@@ -90,18 +107,28 @@ class ZhilianSpider(scrapy.Spider):
             position_name = response.css('.summary-plane__title::text')
 
         position_name = position_name.extract_first().replace('\n', '').strip()
+        company_name = response.css('.company__title::text').extract_first()
 
-        if '实习' in position_name:
-            working_type = '实习'
-        else:
-            working_type = '全职'
-        salary = response.css('.info-money strong::text').extract_first()
+        salary = response.css('.summary-plane__salary::text').extract_first()
         if salary:
-            salary = re.findall(r'(\d*)-(\d*)', salary)
-            salary_min = int(salary[0][0])
-            salary_max = int(salary[0][1])
+            salary = re.split('-', salary)
+            salary_min = salary[0]
+            salary_max = salary[1]
+            if '万' in salary_min:
+                salary_min = float(re.findall(r'(.*)万', salary_min)[0])
+                salary_min = salary_min * 10000
+            else:
+                salary_min = float(re.findall(r'(.*)千', salary_min)[0])
+                salary_min = salary_min * 1000
 
-        info_list = response.css('.info-three span')
+            if '万' in salary_max:
+                salary_max = float(re.findall(r'(.*)万', salary_max)[0])
+                salary_max = salary_max * 10000
+            else:
+                salary_max = float(re.findall(r'(.*)千', salary_max)[0])
+                salary_max = salary_max * 1000
+
+        info_list = response.css('.summary-plane__info li')
         if info_list:
             working_place = info_list[0].css('a::text').extract_first()
             working_exp = re.findall(r'(\d)-', info_list[1].css('::text').extract_first())
@@ -110,23 +137,16 @@ class ZhilianSpider(scrapy.Spider):
             else:
                 working_exp = 0
             education = info_list[2].css('::text').extract_first()
-            position_num = info_list[3].css('::text').extract_first()
-            if position_num:
-                position_num = int(re.findall(r'(\d*)人', position_num)[0])
 
-            welfare = re.findall(r'JobWelfareTab = (.*?);', response.text)
-            if welfare:
-                welfare = welfare[0]
+            welfare_list = response.css('.highlights__content-item::text').extract()
+            if welfare_list:
+                welfare = ';'.join(welfare_list)
             else:
-                welfare = ''
-
-        responsibility = response.css('.pos-ul span::text').extract()
-        if responsibility:
-            responsibility = ';'.join(responsibility)
+                welfare = '无'
         else:
-            responsibility = response.css('.responsibility div::text').extract()
-            if responsibility:
-                responsibility = ';'.join(responsibility)
+            welfare = '无'
+
+        abstract = remove_r_n_t(remove_tags(response.css('.describtion').extract_first()))
 
         zhilian_item['url_object_id'] = get_md5(url)
         zhilian_item['url'] = url
@@ -138,11 +158,9 @@ class ZhilianSpider(scrapy.Spider):
         zhilian_item['working_place'] = working_place
         zhilian_item['working_exp'] = working_exp
         zhilian_item['education'] = education
-        zhilian_item['working_type'] = working_type
-        zhilian_item['position_num'] = position_num
-        zhilian_item['responsibility'] = responsibility.replace('\n', '').strip()
+        zhilian_item['abstract'] = abstract[:250]
         zhilian_item['data_source'] = '智联招聘'
-        zhilian_item['publish_time'] = datetime.datetime.now().date()
-        zhilian_item['other_message'] = ''
+        zhilian_item['company_name'] = company_name
+        zhilian_item['job_classify'] = response.meta['job_classify']
 
         yield zhilian_item

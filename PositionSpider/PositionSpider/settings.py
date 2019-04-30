@@ -68,8 +68,11 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
+SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 ITEM_PIPELINES = {
-   'PositionSpider.pipelines.MysqlTwistPipeline': 300,
+   'scrapy_redis.pipelines.RedisPipeline': 300,
+   'PositionSpider.pipelines.MysqlTwistPipeline': 250,
    'PositionSpider.pipelines.ElasticSearchPipeline': 200,
 }
 
@@ -106,3 +109,13 @@ CHROMEDRIVER_PATH = '/home/yuzhou/software/chromedriver'
 
 # ES_ADDRESS = '60.205.224.136'
 ES_ADDRESS = '39.96.16.6'
+
+REDIS_ADDRESS = '60.205.224.136'
+
+# slave端redis_url配置
+# REDIS_URL = 'redis://60.205.224.136:6379'
+# master端redis配置
+# REDIS_HOST = 'localhost'
+# REDIS_PORT = 6379
+
+

@@ -14,10 +14,26 @@
 <body>
 <div id="container">
 	<div id="hd" class="ue-clear">
-    	<a href="/"><div class="logo"></div></a>
         <div class="inputArea">
-        	<input type="text" class="searchInput form-control" value="{{ key_words }}"/>
-            <input type="button" class="searchButton" onclick="add_search()"/>
+            <a href="/"><div class="logo"></div></a>
+            <div class="col-lg-6 my-result-input-group">
+                <div class="input-group">
+                    <input type="text" class="searchInput form-control" value="{{ key_words }}"/>
+    {#            <input type="button" class="searchButton" onclick="add_search()"/>#}
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" onclick="add_search()">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"><strong>"职"搜一下</strong></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <ul class="dataList dropdown-menu">
+                	<li>如何学好设计</li>
+                    <li>界面设计</li>
+                    <li>UI设计培训要多少钱</li>
+                    <li>设计师学习</li>
+                    <li>哪里有好的网站</li>
+            </ul>
         </div>
     </div>
     <div class="my-nav">
@@ -234,6 +250,14 @@
 	}
 </script>
 <script type="text/javascript">
+    var suggest_url = "{% url "suggest" %}"
+    var search_url = "{% url 'search' %}"
+
+    function add_search(){
+        val = $(".searchInput").val();
+        window.location.href=search_url+'?q='+val+"&s_type="+$(".active").attr('data-type')
+    }
+
     $('.searchList').on('click', '.searchItem', function(){
         $('.searchList .searchItem').removeClass('current');
         $(this).addClass('current');
@@ -250,6 +274,36 @@
         $('.searchInput').val(text);
         $('.dataList').hide()
     });
+
+    hideElement($('.dataList'), $('.searchInput'));
+
+
+    // 搜索建议
+    $(function(){
+        $('.searchInput').bind(' input propertychange ',function(){
+            var searchText = $(this).val();
+            var tmpHtml = ""
+            $.ajax({
+                cache: false,
+                type: 'get',
+                dataType:'json',
+                url:suggest_url+"?s="+searchText+"&s_type="+$(".active").attr('data-type'),
+                async: true,
+                success: function(data) {
+                    for (var i=0;i<data.length;i++){
+                        tmpHtml += '<li><a href="'+search_url+'?q='+data[i]+'&s_type='+$(".active").attr('data-type')+'">'+data[i]+'</a></li>'
+                    }
+                    $(".dataList").html("")
+                    $(".dataList").append(tmpHtml);
+                    if (data.length == 0){
+                        $('.dataList').hide()
+                    }else {
+                        $('.dataList').show()
+                    }
+                }
+            });
+        } );
+    })
 
     hideElement($('.dataList'), $('.searchInput'));
 </script>

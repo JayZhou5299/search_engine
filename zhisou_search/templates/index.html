@@ -8,6 +8,8 @@
 <title>lcv-search 搜索引擎</title>
 <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css" />
 <link href="{% static 'css/index.css' %}" rel="stylesheet" type="text/css" />
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
 <div id="container">
@@ -16,18 +18,24 @@
         	<h1 class="title">
             	<div class="logo large"></div>
             </h1>
-            <div class="nav ue-clear">
-            	<ul class="searchList">
-                    <li class="searchItem current" data-type="article">技术文章</li>
-                    <li class="searchItem" data-type="video">学习视频</li>
-                    <li class="searchItem" data-type="position">岗位信息</li>
-                    <li class="searchItem" data-type="job_help">求职帮助</li>
-                </ul>
-            </div>
+            <ul class="nav nav-pills my-ul">
+                <li class="active" data-type="article" role="presentation"><a href="#">技术文章</a></li>
+                <li data-type="video" role="presentation"><a href="#">学习视频</a></li>
+                <li data-type="position" role="presentation"><a href="#">岗位信息</a></li>
+                <li data-type="job_help" role="presentation"><a href="#">求职帮助</a></li>
+            </ul>
             <div class="inputArea">
-            	<input type="text" class="searchInput" />
-                <input type="button" class="searchButton" onclick="add_search()" />
-                <ul class="dataList">
+                <div class="col-lg-10 my-input-group">
+                    <div class="input-group">
+                        <input type="text" class="searchInput form-control" />
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="add_search()">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"><strong>"职"搜一下</strong></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <ul class="dataList dropdown-menu">
                 	<li>如何学好设计</li>
                     <li>界面设计</li>
                     <li>UI设计培训要多少钱</li>
@@ -36,24 +44,24 @@
                 </ul>
             </div>
 
-            <div class="historyArea">
-            	<p class="history">
-                	<label>热门搜索：</label>
-                    {% for search_words in topn_search %}
-                        <a href="/search?q={{ search_words }}">{{ search_words }}</a>
-                    {% endfor %}
-                </p>
-                <p class="history mysearch">
-                	<label>我的搜索：</label>
-                    <span class="all-search">
-                        <a href="javascript:;">专注界面设计网站</a>
-                        <a href="javascript:;">用户体验</a>
-                        <a href="javascript:;">互联网</a>
-                        <a href="javascript:;">资费套餐</a>
-                    </span>
-
-                </p>
-            </div>
+{#            <div class="historyArea">#}
+{#            	<p class="history">#}
+{#                	<label>热门搜索：</label>#}
+{#                    {% for search_words in topn_search %}#}
+{#                        <a href="/search?q={{ search_words }}">{{ search_words }}</a>#}
+{#                    {% endfor %}#}
+{#                </p>#}
+{#                <p class="history mysearch">#}
+{#                	<label>我的搜索：</label>#}
+{#                    <span class="all-search">#}
+{#                        <a href="javascript:;">专注界面设计网站</a>#}
+{#                        <a href="javascript:;">用户体验</a>#}
+{#                        <a href="javascript:;">互联网</a>#}
+{#                        <a href="javascript:;">资费套餐</a>#}
+{#                    </span>#}
+{##}
+{#                </p>#}
+{#            </div>#}
         </div><!-- End of main -->
     </div><!--End of bd-->
 
@@ -70,10 +78,9 @@
     var suggest_url = "{% url "suggest" %}"
     var search_url = "{% url 'search' %}"
 
-
-	$('.searchList').on('click', '.searchItem', function(){
-		$('.searchList .searchItem').removeClass('current');
-		$(this).addClass('current');
+	$('.my-ul').on('click', 'li', function(){
+		$('.my-ul li').removeClass('active');
+		$(this).addClass('active');
 	});
 
     function removeByValue(arr, val) {
@@ -95,11 +102,11 @@
                 cache: false,
                 type: 'get',
                 dataType:'json',
-                url:suggest_url+"?s="+searchText+"&s_type="+$(".searchItem.current").attr('data-type'),
+                url:suggest_url+"?s="+searchText+"&s_type="+$(".active").attr('data-type'),
                 async: true,
                 success: function(data) {
                     for (var i=0;i<data.length;i++){
-                        tmpHtml += '<li><a href="'+search_url+'?q='+data[i]+'&s_type='+$(".searchItem.current").attr('data-type')+'">'+data[i]+'</a></li>'
+                        tmpHtml += '<li><a href="'+search_url+'?q='+data[i]+'&s_type='+$(".active").attr('data-type')+'">'+data[i]+'</a></li>'
                     }
                     $(".dataList").html("")
                     $(".dataList").append(tmpHtml);
@@ -140,7 +147,7 @@
             MapSearchArr();
         }
 
-        window.location.href=search_url+'?q='+val+"&s_type="+$(".searchItem.current").attr('data-type')
+        window.location.href=search_url+'?q='+val+"&s_type="+$(".active").attr('data-type')
 
     }
 
@@ -172,7 +179,6 @@
             searchArr.unshift(val)
         }
     }
-
 
 </script>
 </html>
