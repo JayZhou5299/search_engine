@@ -72,10 +72,10 @@ class MysqlTwistPipeline(object):
         :return:
         """
         insert_sql = """
-            replace into tb_position_information(url_object_id, working_place, job_classify, position_num)
-            values ('%s', '%s', '%s', '%s')
+            replace into tb_position_information(url_object_id, working_place, job_classify)
+            values ('%s', '%s', '%s')
         """
-        final_sql = insert_sql % (item['url_object_id'], item['working_place'], item['job_classify'], item['position_num'])
+        final_sql = insert_sql % (item['url_object_id'], item['working_place'], item['job_classify'])
         # print(final_sql)
         cursor.execute(final_sql)
 
