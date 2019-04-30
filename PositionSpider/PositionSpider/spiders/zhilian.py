@@ -84,7 +84,7 @@ class ZhilianSpider(RedisSpider):
         if json_dict:
             result_list = json_dict['data']['results']
             for result_obj in result_list:
-                # time.sleep(random.randint(1, 5))
+                time.sleep(random.randint(1, 5))
                 yield Request(url=result_obj['positionURL'], callback=self.parse_detail,
                               meta={'job_classify': response.meta['job_classify']})
 
