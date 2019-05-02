@@ -28,11 +28,7 @@
                 </div>
             </div>
             <ul class="dataList dropdown-menu">
-                	<li>如何学好设计</li>
-                    <li>界面设计</li>
-                    <li>UI设计培训要多少钱</li>
-                    <li>设计师学习</li>
-                    <li>哪里有好的网站</li>
+                <li>请输入搜索的关键字...</li>
             </ul>
         </div>
     </div>
@@ -49,7 +45,7 @@
 
             <div class="resultArea">
             	<p class="resultTotal">
-                	<span class="info">找到约&nbsp;<span class="totalResult">{{ total_nums }}</span>&nbsp;条结果(用时<span class="time">{{ last_seconds }}</span>秒)，共约<span class="totalPage">{{ page_nums }}</span>页</span>
+                	<span class="info">找到约&nbsp;<span class="totalResult">{{ total_nums }}</span>&nbsp;条结果，共约<span class="totalPage">{{ page_nums }}</span>页</span>
                 </p>
                 <div class="resultList">
                     {% for hit in all_hits %}
@@ -79,7 +75,7 @@
                     {% endfor %}
                 </div>
                 <!-- 分页 -->
-                <div class="pagination ue-clear">eee</div>
+                <div class="my-pagination ue-clear"></div>
                 <!-- 相关搜索 -->
 
             </div>
@@ -94,6 +90,12 @@
 <script type="text/javascript" src="{% static 'js/pagination.js' %}"></script>
 <script type="text/javascript">
     var search_url = "{% url 'search' %}"
+    var suggest_url = "{% url "suggest" %}"
+
+    function add_search(){
+        val = $(".searchInput").val();
+        window.location.href=search_url+'?q='+val+"&s_type="+$(".active").attr('data-type')
+    }
 
     $('.my-u').on('click', 'li', function(){
 		$('.my-u li').removeClass('active');
@@ -244,5 +246,34 @@
             searchArr.unshift(val)
         }
     }
+
+    // 搜索建议
+    $(function(){
+        $('.searchInput').bind(' input propertychange ',function(){
+            var searchText = $(this).val();
+            var tmpHtml = ""
+            $.ajax({
+                cache: false,
+                type: 'get',
+                dataType:'json',
+                url:suggest_url+"?s="+searchText+"&s_type="+$(".active").attr('data-type'),
+                async: true,
+                success: function(data) {
+                    for (var i=0;i<data.length;i++){
+                        tmpHtml += '<li><a href="'+search_url+'?q='+data[i]+'&s_type='+$(".active").attr('data-type')+'">'+data[i]+'</a></li>'
+                    }
+                    $(".dataList").html("")
+                    $(".dataList").append(tmpHtml);
+                    if (data.length == 0){
+                        $('.dataList').hide()
+                    }else {
+                        $('.dataList').show()
+                    }
+                }
+            });
+        } );
+    })
+
+    hideElement($('.dataList'), $('.searchInput'));
 </script>
 </html>

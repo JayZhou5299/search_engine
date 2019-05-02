@@ -66,7 +66,7 @@ class LagouSpider(scrapy.Spider):
             url_list = it_classify_node_obj.css('a::attr(href)').extract()
             job_classify_list = it_classify_node_obj.css('a::text').extract()
             for url_obj in url_list:
-                time.sleep(random.randint(2, 4))
+                time.sleep(random.randint(3, 6))
                 job_classify = job_classify_list[url_list.index(url_obj)]
                 yield Request(url=url_obj, callback=self.parse_crawl_urls,
                               meta={'job_classify': job_classify})
@@ -90,6 +90,7 @@ class LagouSpider(scrapy.Spider):
 
         # 最后一个元素是下一页的标签
         next_url = response.css('.page_no::attr(href)').extract()[-1]
+        time.sleep(random.randint(2, 4))
         yield Request(url=next_url, callback=self.parse_crawl_urls,
                       meta={'job_classify': response.meta['job_classify']})
 
@@ -107,10 +108,6 @@ class LagouSpider(scrapy.Spider):
         other_message_list = response.css('.job_request span::text').extract()
         if not other_message_list:
             return
-
-        # salary = other_message_list[0]
-        # if not salary:
-        #     return
 
         salary_list = re.findall(r'(\d*)k', other_message_list[0])
         salary_min = float(salary_list[0]) * 1000

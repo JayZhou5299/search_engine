@@ -31,6 +31,7 @@ class LiepinSpider(scrapy.Spider):
 
             # 需要将城市改为全国，所以要对相对url进行替换
             for relative_url_obj in relative_url_list:
+                time.sleep(random.randint(2, 4))
                 job_classify = job_classify_list[relative_url_list.index(relative_url_obj)]
 
                 # 需要将相关地理信息修改为全国
@@ -44,10 +45,9 @@ class LiepinSpider(scrapy.Spider):
         :param response:
         :return:
         """
-        time.sleep(random.randint(1, 3))
-
         crawl_urls = response.css('h3 a::attr(href)').extract()
         for crawl_url in crawl_urls:
+            time.sleep(random.randint(1, 2))
             yield Request(url=parse.urljoin('https://www.liepin.com', crawl_url),
                           callback=self.parse_detail,
                           meta={'job_classify': response.meta['job_classify']})
@@ -59,6 +59,7 @@ class LiepinSpider(scrapy.Spider):
 
         # 下一页的url在翻页node的倒数第三个
         next_url = response.css('.pagerbar a::attr(href)').extract()[-3]
+        time.sleep(random.randint(2, 4))
         yield Request(url=parse.urljoin('https://www.liepin.com', next_url),
                       callback=self.parse_crawl_urls,
                       meta={'job_classify': response.meta['job_classify']})

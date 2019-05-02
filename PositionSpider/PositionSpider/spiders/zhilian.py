@@ -48,6 +48,7 @@ class ZhilianSpider(RedisSpider):
         crawl_name_list = crawl_div_node.css('a::text').extract()
 
         for crawl_name_obj in crawl_name_list:
+            time.sleep(random.randint(2, 4))
             # 用来获取数据总条数
             start_crawl_url = crawl_url_model % (0, crawl_name_obj, random.random(), random.random())
             res = requests.get(start_crawl_url)
@@ -70,6 +71,7 @@ class ZhilianSpider(RedisSpider):
                         else:
                             request_url = crawl_url_model % (page_end * 90, crawl_name_obj,
                                                              random.random(), random.random())
+                            time.sleep(random.randint(2, 4))
                             yield Request(url=request_url, callback=self.parse_crawl_list,
                                           meta={'job_classify': crawl_name_obj})
                             page_end -= 1

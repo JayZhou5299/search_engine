@@ -28,11 +28,7 @@
                 </div>
             </div>
             <ul class="dataList dropdown-menu">
-                	<li>如何学好设计</li>
-                    <li>界面设计</li>
-                    <li>UI设计培训要多少钱</li>
-                    <li>设计师学习</li>
-                    <li>哪里有好的网站</li>
+                <li>请输入搜索的关键字...</li>
             </ul>
         </div>
     </div>
@@ -49,7 +45,7 @@
 
             <div class="resultArea">
             	<p class="resultTotal">
-                	<span class="info">找到约&nbsp;<span class="totalResult">{{ total_nums }}</span>&nbsp;条结果(用时<span class="time">{{ last_seconds }}</span>秒)，共约<span class="totalPage">{{ page_nums }}</span>页</span>
+                	<span class="info">找到约&nbsp;<span class="totalResult">{{ total_nums }}</span>&nbsp;条结果，共约<span class="totalPage">{{ page_nums }}</span>页</span>
                 </p>
                 <div class="resultList">
                     {% for hit in all_hits %}
@@ -120,6 +116,12 @@
 <script src="{% static  'js/china.js' %}"></script>
 <script type="text/javascript">
     var search_url = "{% url 'search' %}"
+    var suggest_url = "{% url "suggest" %}"
+
+    function add_search(){
+        val = $(".searchInput").val();
+        window.location.href=search_url+'?q='+val+"&s_type="+$(".active").attr('data-type')
+    }
 
     $('.my-u').on('click', 'li', function(){
 		$('.my-u li').removeClass('active');
@@ -270,6 +272,37 @@
             searchArr.unshift(val)
         }
     }
+
+    // 搜索建议
+    $(function(){
+        $('.searchInput').bind(' input propertychange ',function(){
+            var searchText = $(this).val();
+            var tmpHtml = ""
+            $.ajax({
+                cache: false,
+                type: 'get',
+                dataType:'json',
+                url:suggest_url+"?s="+searchText+"&s_type="+$(".active").attr('data-type'),
+                async: true,
+                success: function(data) {
+                    for (var i=0;i<data.length;i++){
+                        tmpHtml += '<li><a href="'+search_url+'?q='+data[i]+'&s_type='+$(".active").attr('data-type')+'">'+data[i]+'</a></li>'
+                    }
+                    $(".dataList").html("")
+                    $(".dataList").append(tmpHtml);
+                    if (data.length == 0){
+                        $('.dataList').hide()
+                    }else {
+                        $('.dataList').show()
+                    }
+                }
+            });
+        } );
+    })
+
+    hideElement($('.dataList'), $('.searchInput'));
+
+
 </script>
 <script>
     // 基于准备好的dom，初始化echarts实例
@@ -297,7 +330,7 @@
                 },
                 formatter: function (params) {
                     console.log(params)
-                    var res = '<div style="height:160px;width:300px;border-radius:5px;background:#fff;box-shadow:0 0 10px 5px #aaa"><div style="height:50px;width:100%;border-radius:5px;background:#F8F9F9;border-bottom:1px solid #F0F0F0"><span style="line-height:50px;margin-left:18px">山东省</span><span style="float:right;line-height:50px;margin-right:18px;color:#5396E3;cursor:pointer">点击查看详情</span></div><div style="height:110px;width:100%;border-radius:5px;background:#fff"><div style="padding-left:18px;padding-top:22px"><span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:rgba(92,169,235,1)"></span> <span>有效条数</span><span style="float:right;margin-right:18px">2323万</span></div><div style="padding-left:18px;padding-top:14px"><span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:rgba(92,169,235,1)"></span> <span>质量合格率</span><span style="float:right;margin-right:18px">85%</span></div></div></div>';
+                    var res = '<div style="height:160px;width:300px;border-radius:5px;background:#fff;box-shadow:0 0 10px 5px #aaa"><div style="height:50px;width:100%;border-radius:5px;background:#F8F9F9;border-bottom:1px solid #F0F0F0"><span style="line-height:50px;margin-left:18px">山东省</span><span style="float:right;line-height:50px;margin-right:18px;color:#5396E3;cursor:pointer">点击查看详情</span></div><div style="height:110px;width:100%;border-radius:5px;background:#fff"><div style="padding-left:18px;padding-top:22px"><span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:rgba(92,169,235,1)"></span> <span>有效条数:value</span><span style="float:right;margin-right:18px">2323万</span></div><div style="padding-left:18px;padding-top:14px"><span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:rgba(92,169,235,1)"></span> <span>质量合格率</span><span style="float:right;margin-right:18px">85%</span></div></div></div>';
                     return res;
                 }
             },

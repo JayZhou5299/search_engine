@@ -101,8 +101,16 @@ def handle_and_formate_map():
         if max_amount < int(amount_province):
             max_amount = int(amount_province)
 
+        # 构造top3职位显示的字符串
+        # 返回值eg:<class 'list'>: [('后端开发', 47.0), ('HTML5', 40.0), ('包装设计', 25.0)]
+        top_list = redis_cli.zrevrange(province_obj, 0, 2, True)
+        top_str = ''
+        for top_obj in top_list:
+            top_str += '%s:%s\n' % (top_obj[0], top_obj[1])
+
+        # [: -1]是去掉最后一个换行符
         redis_cli.lpush('map_amount_list',
-                        json.dumps({province_obj: amount_province}, ensure_ascii=False))
+                        json.dumps({province_obj: amount_province, 'top_str': top_str[: -1]}, ensure_ascii=False))
 
     redis_cli.set('map_min_amount', min_amount)
     redis_cli.set('map_max_amount', max_amount)
@@ -113,7 +121,7 @@ def entrance():
     函数入口
     :return:
     """
-    classify_province()
+    # classify_province()
     handle_and_formate_map()
 
 
