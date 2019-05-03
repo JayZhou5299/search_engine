@@ -143,8 +143,8 @@ class ElasticSearchPipeline(object):
                                           ((position.position_name, 10), (position.company_name, 8)))
 
         # 将相关的信息写入文件中查看分布式部署是否正常
-        with open('/home/yuzhou/scrapy_redis_position.txt', 'a') as f:
-            f.write('url:%s,title:%s\n' % (item['url'], item['position_name']))
+        # with open('/Users/hanyuzhou/scrapy_redis_position.txt', 'a') as f:
+        #     f.write('url:%s,title:%s\n' % (item['url'], item['position_name']))
 
         # 调用save方法直接存储到es中
         position.save()
