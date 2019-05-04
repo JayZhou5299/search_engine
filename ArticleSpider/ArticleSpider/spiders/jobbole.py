@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import redis
 import re
 import time
 import scrapy
@@ -9,6 +9,7 @@ from urllib import parse
 from scrapy.http import Request
 from w3lib.html import remove_tags
 from urllib.request import unquote
+from scrapy_redis.spiders import RedisSpider
 from selenium import webdriver
 #scarpy信号相关的包
 # from scrapy.xlib.pydispatch import dispatcher
@@ -20,7 +21,7 @@ from ArticleSpider.utils.common import get_md5
 from ArticleSpider import settings
 
 
-class JobboleSpider(scrapy.Spider):
+class JobboleSpider(RedisSpider):
     name = 'jobbole'
     allowed_domains = ['jobbole.com']
     # 不同域名的地址只需要改配置即可，目前有三类
@@ -90,9 +91,9 @@ class JobboleSpider(scrapy.Spider):
         url = response.url
 
         # 第一个参数表示被替换的，第二个参数表示用什么替换，第三个是打算替换的字符串
-        content = re.sub(r'<div class="copyright-area">.*</div>', '', response.css('.entry').extract_first())
-        content = re.sub(r'[\t\r\n\s]', '', remove_tags(content))
-        content = re.sub(r"""[;"']""", '', content)
+        # content = re.sub(r'<div class="copyright-area">.*</div>', '', response.css('.entry').extract_first())
+        # content = re.sub(r'[\t\r\n\s]', '', remove_tags(content))
+        # content = re.sub(r"""[;"']""", '', content)
 
         collection_num = response.css('.bookmark-btn::text').extract_first().replace('收藏', '').strip()
         comment_num = response.css('.btn-bluet-bigger.hide-on-480::text').extract_first().replace('评论', '').strip()

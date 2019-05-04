@@ -1,21 +1,34 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import re
+import redis
 import datetime
 
 from scrapy.http import Request
+from scrapy_redis.spiders import RedisSpider
 from w3lib.html import remove_tags
 
 from ArticleSpider.items import TechnicalArticleItem
 from ArticleSpider.utils.common import get_md5
+from ArticleSpider import settings
 
-class LinuxCnSpider(scrapy.Spider):
+
+class LinuxCnSpider(RedisSpider):
     """
     linux中国的爬虫
     """
     name = 'linux_cn'
     allowed_domains = ['linux.cn/']
-    start_urls = ['https://linux.cn/tech/']
+    # start_urls = ['https://linux.cn/tech/']
+    redis_key = 'linux_cn:start_urls'
+
+    def __init__(self):
+        """
+        初始化start_urls到redis
+        """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
+        # master端需要将这个打开
+        # redis_cli.lpush(self.redis_key, 'https://linux.cn/tech/')
 
     def parse(self, response):
         """
@@ -60,10 +73,10 @@ class LinuxCnSpider(scrapy.Spider):
 
         url = response.url
 
-        content = response.css('.d #article_content').extract_first()
+        # content = response.css('.d #article_content').extract_first()
         # 第一个参数表示被替换的，第二个参数表示用什么替换，第三个是打算替换的字符串
-        content = re.sub(r'[\t\r\n\s]', '', remove_tags(content))
-        content = re.sub(r"""[;"']""", '', content)
+        # content = re.sub(r'[\t\r\n\s]', '', remove_tags(content))
+        # content = re.sub(r"""[;"']""", '', content)
 
         collection_num = response.css('#_favtimes::text').extract_first()
         praise_num = response.css('#_sharetimes::text').extract_first()

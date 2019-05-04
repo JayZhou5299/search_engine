@@ -2,21 +2,33 @@
 import scrapy
 import datetime
 import requests
+import json
+import redis
 import re
 
 from scrapy.selector import Selector
 from scrapy import Request
 from urllib import parse
 from w3lib.html import remove_tags
+from scrapy_redis.spiders import RedisSpider
 
 from ArticleSpider.items import TechnicalArticleItem
 from ArticleSpider.utils.common import get_md5
+from ArticleSpider import settings
 
-
-class CnblogsSpider(scrapy.Spider):
+class CnblogsSpider(RedisSpider):
     name = 'cnblogs'
     allowed_domains = ['www.cnblogs.com']
-    start_urls = ['https://www.cnblogs.com/']
+    # start_urls = ['https://www.cnblogs.com/']
+    redis_key = 'cnblogs:start_urls'
+
+    def __init__(self):
+        """
+        初始化start_urls到redis
+        """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
+        # master端需要将这个打开
+        # redis_cli.lpush(self.redis_key, 'https://www.cnblogs.com/')
 
     def parse(self, response):
         """
@@ -66,14 +78,20 @@ class CnblogsSpider(scrapy.Spider):
         :return:
         """
         url = response.url
+        post_id = re.findall(r'p/(\d*)', url)
+        if post_id:
+            post_id = post_id[0]
+        else:
+            return
+
+        blog_id = re.findall(r'currentBlogId=(\d*)', response.text)
+        if blog_id:
+            blog_id = blog_id[0]
+        else:
+            return
+
         cnblogs_item = TechnicalArticleItem()
         title = response.css('#cb_post_title_url::text').extract_first()
-        read_num = response.css('#post_view_count::text').extract_first()
-        if not read_num:
-            read_num = 0
-        comment_num = response.css('#post_comment_count::text').extract_first()
-        if not comment_num:
-            comment_num = 0
 
         publish_time = response.css('#post-date::text').extract_first()
         if publish_time:
@@ -88,28 +106,58 @@ class CnblogsSpider(scrapy.Spider):
         cnblogs_item['title'] = title
         cnblogs_item['article_type'] = response.meta['article_type']
         cnblogs_item['data_source'] = '博客园'
-        cnblogs_item['read_num'] = int(read_num)
-        cnblogs_item['comment_num'] = int(comment_num)
+        cnblogs_item['read_num'] = self.get_read_num(post_id)
+        cnblogs_item['comment_num'] = self.get_comment_num(post_id)
         cnblogs_item['praise_num'] = 0
         cnblogs_item['collection_num'] = 0
 
         cnblogs_item['publish_time'] = publish_time
         cnblogs_item['abstract'] = abstract
-        cnblogs_item['tags'] = ''
+        cnblogs_item['tags'] = self.get_tags(blog_id, post_id)
+        pass
 
-        yield cnblogs_item
+        # yield cnblogs_item
 
-    def get_read_num(self):
+    def get_read_num(self, post_id):
         """
         获取阅读数量
         :return:
         """
-        pass
+        res = requests.get('https://www.cnblogs.com/mvc/blog/ViewCountCommentCout.aspx?postId=%s'
+                           % post_id)
+        try:
+            read_num = int(res.text)
+        except Exception as e:
+            read_num = 0
 
-    def get_comment_num(self):
+        return read_num
+
+    def get_comment_num(self, post_id):
         """
         获取评论数量
         :return:
         """
-        pass
+        res = requests.get('https://www.cnblogs.com/mvc/blog/GetComments.aspx?postId=%s&'
+                           'blogApp=fpj-frank&pageIndex=0&anchorCommentId=0&_=1556866829138'
+                           % post_id)
+        try:
+            json_dict = json.loads(res.text)
+            comment_num = int(json_dict['commentCount'])
+        except Exception as e:
+            comment_num = 0
+
+        return comment_num
+
+    def get_tags(self, blog_id, post_id):
+        """
+        获取标签
+        :param blog_id:
+        :param post_id:
+        :return:
+        """
+        res = requests.get('https://www.cnblogs.com/mvc/blog/CategoriesTags.aspx?blogApp=quanxiaoha'
+                           '&blogId=%s&postId=%s' % (blog_id, post_id))
+        json_dict = json.loads(res.text)
+        tags= remove_tags(json_dict['Tags']).replace('标签: ', '')
+        return tags
 

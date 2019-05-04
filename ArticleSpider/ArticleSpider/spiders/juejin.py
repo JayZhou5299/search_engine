@@ -5,19 +5,31 @@ import time
 import random
 import datetime
 import json
+import redis
 import requests
 
 from scrapy.http import Request
 from w3lib.html import remove_tags
+from scrapy_redis.spiders import RedisSpider
 
 from ArticleSpider.items import TechnicalArticleItem
 from ArticleSpider.utils.common import get_md5
+from ArticleSpider import settings
 
 
-class JuejinSpider(scrapy.Spider):
+class JuejinSpider(RedisSpider):
     name = 'juejin'
     allowed_domains = ['juejin.im', 'web-api.juejin.im']
-    start_urls = ['https://juejin.im']
+    # start_urls = ['https://juejin.im']
+    redis_key = 'juejin:start_urls'
+
+    def __init__(self):
+        """
+        初始化start_urls到redis
+        """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
+        # master端需要将这个打开
+        # redis_cli.lpush(self.redis_key, 'https://juejin.im')
 
     def parse(self, response):
         """

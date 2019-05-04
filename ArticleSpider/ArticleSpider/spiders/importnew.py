@@ -1,21 +1,33 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import time
+import redis
 import re
 import datetime
 
 from w3lib.html import remove_tags
 from scrapy.http import Request
 from urllib import parse
+from scrapy_redis.spiders import RedisSpider
 
-
+from ArticleSpider import settings
 from ArticleSpider.utils.common import get_md5
 from ArticleSpider.items import TechnicalArticleItem
 
-class ImportnewSpider(scrapy.Spider):
+
+class ImportnewSpider(RedisSpider):
     name = 'importnew'
     allowed_domains = ['importnew.com']
-    start_urls = ['http://www.importnew.com/all-posts/']
+    # start_urls = ['http://www.importnew.com/all-posts/']
+    redis_key = 'importnew:start_urls'
+
+    def __init__(self):
+        """
+        初始化start_urls到redis
+        """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
+        # master端需要将这个打开
+        # redis_cli.lpush(self.redis_key, 'http://www.importnew.com/all-posts/')
 
     def parse(self, response):
         """
@@ -31,6 +43,7 @@ class ImportnewSpider(scrapy.Spider):
                 crawl_abstracts.remove('每周10道 ')
         time.sleep(5)
         for crawl_url in crawl_urls:
+            time.sleep(1)
             yield Request(url=parse.urljoin(response.url, crawl_url), callback=self.parse_detail,
                           meta={'index': crawl_urls.index(crawl_url), 'crawl_abstracts': crawl_abstracts}, dont_filter=True)
 
@@ -68,9 +81,9 @@ class ImportnewSpider(scrapy.Spider):
         url = response.url
 
         # 第一个参数表示被替换的，第二个参数表示用什么替换，第三个是打算替换的字符串
-        content = re.sub(r'<div class="copyright-area">.*</div>', '', response.css('.entry').extract_first())
-        content = re.sub(r'[\t\r\n\s]', '', remove_tags(content))
-        content = re.sub(r"""[;"']""", '', content)
+        # content = re.sub(r'<div class="copyright-area">.*</div>', '', response.css('.entry').extract_first())
+        # content = re.sub(r'[\t\r\n\s]', '', remove_tags(content))
+        # content = re.sub(r"""[;"']""", '', content)
 
         # 全部拼接成字符串，然后用正则提取出评论数
         comment_num = ''.join(temp_node.css(' a::text').extract())
