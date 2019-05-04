@@ -4,31 +4,34 @@ import time
 import scrapy
 import requests
 import datetime
+import random
+import redis
 
 from urllib import parse
 from scrapy.http import Request
 from w3lib.html import remove_tags
 from urllib.request import unquote
-from selenium import webdriver
-
+from scrapy_redis.spiders import RedisSpider
 
 from ArticleSpider.items import TechnicalArticleItem
 from ArticleSpider.utils.common import get_md5
 from ArticleSpider import settings
 
 
-class OschinaSpider(scrapy.Spider):
+class OschinaSpider(RedisSpider):
     """
     开源中国爬虫
     """
     name = 'oschina'
     allowed_domains = ['www.oschina.net']
-    start_urls = []
+    # start_urls = []
+    redis_key = 'oschina:start_urls'
 
     def __init__(self):
         """
         构造函数
         """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
         # 用来存储classification与类别的对应关系
         self.classify_map = dict()
         headers = {
@@ -38,8 +41,12 @@ class OschinaSpider(scrapy.Spider):
         response = requests.get(url='https://www.oschina.net/blog', headers=headers)
         classify_list = re.findall(r'https://www.oschina.net/blog\?classification=(\d*)"><span>·</span> (.*)</a>.*', response.text)
         for classify_obj in classify_list:
-            self.start_urls.append('https://www.oschina.net/blog/widgets/_blog_index_recommend_list?'
-                                   'classification={0}&p=1&type=ajax'.format(classify_obj[0]))
+            # self.start_urls.append('https://www.oschina.net/blog/widgets/_blog_index_recommend_list?'
+            #                        'classification={0}&p=1&type=ajax'.format(classify_obj[0]))
+            # master需要把这个打开
+            # redis_cli.lpush(self.redis_key,
+            #                 'https://www.oschina.net/blog/widgets/_blog_index_recommend_list?'
+            #                 'classification={0}&p=1&type=ajax'.format(classify_obj[0]))
             self.classify_map[classify_obj[0]] = classify_obj[1]
         # print(classify_map)
 
@@ -55,18 +62,16 @@ class OschinaSpider(scrapy.Spider):
         abstract_list = response.css('.description p::text').extract()
         time.sleep(3)
         for crawl_url in crawl_urls:
+            time.sleep(random.randint(1, 3))
             yield Request(url=crawl_url, callback=self.parse_detail,
                           meta={'article_type': article_type, 'crawl_abstracts': abstract_list, 'index': crawl_urls.index(crawl_url)},
                           dont_filter=True)
         # print(response.text)
-        if '暂无文章' in response.text:
-            print('终于结束了')
 
         if '暂无文章' not in response.text:
             next_page_num = int(re.findall(r'.*p=(\d*)&.*', response.url)[0]) + 1
             # print (page_num)
             next_url = re.sub(r'p=(\d*)&', 'p={0}&'.format(next_page_num), response.url)
-            print(next_url)
             yield Request(url=next_url, callback=self.parse, dont_filter=True)
 
     def parse_detail(self, response):
@@ -98,11 +103,11 @@ class OschinaSpider(scrapy.Spider):
 
         tags = response.css('.tags a::text').extract()
         url = response.url
-        content = response.css('#articleContent').extract_first()
+        # content = response.css('#articleContent').extract_first()
 
         # 第一个参数表示被替换的，第二个参数表示用什么替换，第三个是打算替换的字符串
-        content = re.sub(r'[\t\r\n\s]', '', remove_tags(content))
-        content = re.sub(r"""[;"']""", '', content)
+        # content = re.sub(r'[\t\r\n\s]', '', remove_tags(content))
+        # content = re.sub(r"""[;"']""", '', content)
         read_num = response.css('.extra.horizontal .item::text').extract()[3].replace('阅读','').strip()
         collection_num = response.css('.extra .collect-btn span::text').extract_first()
         comment_num = response.css('.extra.horizontal .normal span::text').extract()[1]
