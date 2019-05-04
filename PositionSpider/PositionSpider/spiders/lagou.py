@@ -29,6 +29,7 @@ response = opener.open('https://www.lagou.com/jobs/5570192.html')
 for item in cookie:
     cookie_str += '%s:%s;' % (item.name, item.value)
 
+
 class LagouSpider(scrapy.Spider):
     name = 'lagou'
     allowed_domains = ['www.lagou.com']
@@ -66,7 +67,7 @@ class LagouSpider(scrapy.Spider):
             url_list = it_classify_node_obj.css('a::attr(href)').extract()
             job_classify_list = it_classify_node_obj.css('a::text').extract()
             for url_obj in url_list:
-                time.sleep(random.randint(3, 6))
+                time.sleep(random.randint(4, 7))
                 job_classify = job_classify_list[url_list.index(url_obj)]
                 yield Request(url=url_obj, callback=self.parse_crawl_urls,
                               meta={'job_classify': job_classify})
@@ -79,7 +80,7 @@ class LagouSpider(scrapy.Spider):
         """
         crawl_urls = response.css('.content_left .position_link::attr(href)').extract()
         for crawl_url in crawl_urls:
-            time.sleep(random.randint(2, 4))
+            time.sleep(random.randint(5, 7))
             yield Request(url=crawl_url, callback=self.parse_detail,
                           meta={'job_classify': response.meta['job_classify']})
 
@@ -90,7 +91,7 @@ class LagouSpider(scrapy.Spider):
 
         # 最后一个元素是下一页的标签
         next_url = response.css('.page_no::attr(href)').extract()[-1]
-        time.sleep(random.randint(2, 4))
+        time.sleep(random.randint(4, 7))
         yield Request(url=next_url, callback=self.parse_crawl_urls,
                       meta={'job_classify': response.meta['job_classify']})
 

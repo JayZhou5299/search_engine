@@ -3,20 +3,32 @@ import scrapy
 import re
 import time
 import random
+import redis
 
 from scrapy import Request
 from urllib import parse
 from w3lib.html import remove_tags
+from scrapy_redis.spiders import RedisSpider
 
 from PositionSpider.items import PositionItem
 from PositionSpider.utils.common import get_md5
 from PositionSpider.utils.common import remove_r_n_t
+from PositionSpider import settings
 
 
-class LiepinSpider(scrapy.Spider):
+class LiepinSpider(RedisSpider):
     name = 'liepin'
     allowed_domains = ['www.liepin.com']
-    start_urls = ['https://www.liepin.com/it']
+    # start_urls = ['https://www.liepin.com/it']
+    redis_key = 'liepin:start_urls'
+
+    def __init__(self):
+        """
+        初始化向redis中添加start_urls
+        """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
+        # master端开启即可
+        # redis_cli.lpush(self.redis_key, 'https://www.liepin.com/it')
 
     def parse(self, response):
         """
