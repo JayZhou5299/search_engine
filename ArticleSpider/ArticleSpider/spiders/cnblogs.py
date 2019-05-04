@@ -69,7 +69,8 @@ class CnblogsSpider(RedisSpider):
             if 'Next' in next_tag:
                 next_url = next_node.css('::attr(href)').extract_first()
                 yield Request(url=parse.urljoin('https://www.cnblogs.com/', next_url),
-                              callback=self.parse_crawl_urls)
+                              callback=self.parse_crawl_urls,
+                              meta={'article_type': article_type})
 
     def parse_detail(self, response):
         """
