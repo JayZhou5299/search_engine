@@ -15,6 +15,8 @@ from scrapy_redis.spiders import RedisSpider
 from ArticleSpider.items import TechnicalArticleItem
 from ArticleSpider.utils.common import get_md5
 from ArticleSpider import settings
+from ArticleSpider.utils.common import remove_t_r_n
+
 
 class CnblogsSpider(RedisSpider):
     name = 'cnblogs'
@@ -113,7 +115,7 @@ class CnblogsSpider(RedisSpider):
         cnblogs_item['collection_num'] = 0
 
         cnblogs_item['publish_time'] = publish_time
-        cnblogs_item['abstract'] = abstract
+        cnblogs_item['abstract'] = remove_t_r_n(abstract)
         cnblogs_item['tags'] = self.get_tags(blog_id, post_id)
         # pass
 
