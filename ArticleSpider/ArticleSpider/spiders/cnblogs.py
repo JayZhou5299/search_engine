@@ -157,7 +157,11 @@ class CnblogsSpider(RedisSpider):
         """
         res = requests.get('https://www.cnblogs.com/mvc/blog/CategoriesTags.aspx?blogApp=quanxiaoha'
                            '&blogId=%s&postId=%s' % (blog_id, post_id))
-        json_dict = json.loads(res.text)
-        tags= remove_tags(json_dict['Tags']).replace('标签: ', '')
+        try:
+            json_dict = json.loads(res.text)
+            tags= remove_tags(json_dict['Tags']).replace('标签: ', '')
+        except Exception as e:
+            tags = ''
+
         return tags
 
