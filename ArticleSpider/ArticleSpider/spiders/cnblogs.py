@@ -28,7 +28,7 @@ class CnblogsSpider(RedisSpider):
         """
         redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
         # master端需要将这个打开
-        redis_cli.lpush(self.redis_key, 'https://www.cnblogs.com/')
+        # redis_cli.lpush(self.redis_key, 'https://www.cnblogs.com/')
 
     def parse(self, response):
         """
