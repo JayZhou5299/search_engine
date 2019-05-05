@@ -38,6 +38,7 @@ class JobboleSpider(RedisSpider):
         for url in urls:
             # master端需要将这个打开
             # redis_cli.lpush(self.redis_key, url)
+            pass
 
     # def __init__(self):
     #     self.browser = webdriver.Chrome('/Users/hanyuzhou/Downloads/chromedriver')
