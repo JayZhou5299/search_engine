@@ -26,7 +26,7 @@ class JobboleSpider(RedisSpider):
     allowed_domains = ['jobbole.com']
     # 不同域名的地址只需要改配置即可，目前有三类
     # start_urls = settings.JOBBOLE_LIST_ONE[0]
-    reg_exp = settings.JOBBOLE_LIST_ONE[1]
+    reg_exp = settings.JOBBOLE_LIST_TWO[1]
     redis_key = 'jobbole:start_urls'
 
     def __init__(self):
@@ -34,7 +34,7 @@ class JobboleSpider(RedisSpider):
         初始化start_urls到redis
         """
         redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
-        urls = settings.JOBBOLE_LIST_ONE[0]
+        urls = settings.JOBBOLE_LIST_TWO[0]
         for url in urls:
             # master端需要将这个打开
             # redis_cli.lpush(self.redis_key, url)
