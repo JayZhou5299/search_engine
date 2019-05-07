@@ -75,7 +75,7 @@ class MysqlTwistPipeline(object):
             replace into tb_job_wanted_information(url_object_id, content) values ('%s', '%s')
         """
         final_sql = insert_sql % (item['url_object_id'], item['content'])
-        # print(final_sql)
+        print(final_sql)
         cursor.execute(final_sql)
 
 
