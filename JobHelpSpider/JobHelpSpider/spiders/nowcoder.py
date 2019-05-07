@@ -32,7 +32,7 @@ class NowcoderSpider(RedisSpider):
         """
         redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
         # master端需要打开下面注释
-        #     redis_cli.lpush(self.redis_key,
+        # redis_cli.lpush(self.redis_key,
         #                     'https://www.nowcoder.com/discuss?type=2&order=0&pageSize=30&query=&page=1',
         #                     'https://www.nowcoder.com/discuss?type=7&order=0&pageSize=30&query=&page=1')
 
