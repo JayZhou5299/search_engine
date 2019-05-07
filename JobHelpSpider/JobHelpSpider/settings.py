@@ -97,7 +97,7 @@ ITEM_PIPELINES = {
 MYSQL_HOST = '60.205.224.136'
 MYSQL_USER = 'root'
 MYSQL_PASSWORD = '123456'
-MYSQL_DB = 'search_engine_test'
+MYSQL_DB = 'search_engine'
 
 # ES_ADDRESS = '60.205.224.136'
 ES_ADDRESS = '39.96.16.6'
@@ -105,7 +105,7 @@ ES_ADDRESS = '39.96.16.6'
 REDIS_ADDRESS = '60.205.224.136'
 
 # slave端redis_url配置
-# REDIS_URL = 'redis://60.205.224.136:6379'
+REDIS_URL = 'redis://60.205.224.136:6379'
 # master端redis配置
 # REDIS_HOST = 'localhost'
 # REDIS_PORT = 6379
