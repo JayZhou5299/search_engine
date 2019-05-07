@@ -79,7 +79,7 @@ class AcmcoderSpider(RedisSpider):
         content = response.css('.topic_content').extract_first()
         if content:
             content = remove_t_r_n(remove_tags(content))
-            abstract = content[:300]
+            abstract = content[:200]
 
         title = response.css('.topic_full_title::text').extract_first()
 

@@ -73,7 +73,7 @@ class NowcoderSpider(RedisSpider):
         content = response.css('.post-topic-main').extract_first()
         if content:
             content = remove_t_r_n(remove_tags(content))
-            abstract = content[:300]
+            abstract = content[:200]
 
         title = response.css('.discuss-title::text').extract_first()
 
