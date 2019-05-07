@@ -29,8 +29,8 @@ class AcmcoderSpider(RedisSpider):
         初始化向redis中添加start_urls
         """
         redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
-        if redis_cli.exists(self.redis_key) == 0:
-            redis_cli.lpush(self.redis_key, 'http://discuss.acmcoder.com/index?tab=job&page=1')
+        # master端需要打开下面的注释
+        # redis_cli.lpush(self.redis_key, 'http://discuss.acmcoder.com/index?tab=job&page=1')
 
     def parse(self, response):
         """
