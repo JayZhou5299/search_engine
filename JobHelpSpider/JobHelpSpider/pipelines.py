@@ -5,6 +5,10 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import time
+import pymysql
+import pymysql.cursors
+# 将mysql插入变成异步化的包，由twisted提供
+from twisted.enterprise import adbapi
 from elasticsearch_dsl.connections import connections
 
 
@@ -17,6 +21,62 @@ es = connections.create_connection(hosts=[settings.ES_ADDRESS])
 class JobhelpspiderPipeline(object):
     def process_item(self, item, spider):
         return item
+
+
+class MysqlTwistPipeline(object):
+    """
+    数据异步插入mysql
+    """
+    def __init__(self, dbpool):
+        self.dbpool = dbpool
+
+    @classmethod
+    def from_settings(cls, settings):
+        """
+        spider会自动调用该方法，并且将settings作为参数传递进来
+        :param settings:
+        :return:
+        """
+        dbparams = dict(
+        host=settings['MYSQL_HOST'],
+        db=settings['MYSQL_DB'],
+        passwd=settings['MYSQL_PASSWORD'],
+        user=settings['MYSQL_USER'],
+        charset='utf8mb4',
+        cursorclass=pymysql.cursors.DictCursor,
+        )
+        dbpool = adbapi.ConnectionPool('pymysql', **dbparams)
+
+        # 调用构造函数
+        return cls(dbpool)
+
+    def process_item(self, item, spider):
+        # 会将插入变成异步的
+        query = self.dbpool.runInteraction(self.do_insert, item)
+        query.addErrback(self.handle_error, item, spider)
+
+    def handle_error(self, failure, item, spider):
+        """
+        错误处理函数
+        :param failure:
+        :param item:
+        :return:
+        """
+        print(failure)
+
+    def do_insert(self, cursor, item):
+        """
+        执行jobbole数据的具体插入
+        :param cursor:
+        :param item:
+        :return:
+        """
+        insert_sql = """
+            replace into tb_job_wanted_information(url_object_id, content) values ('%s', '%s')
+        """
+        final_sql = insert_sql % (item['url_object_id'], item['content'])
+        # print(final_sql)
+        cursor.execute(final_sql)
 
 
 class ElasticSearchPipeline(object):
@@ -77,8 +137,8 @@ class ElasticSearchPipeline(object):
         job_wanted_information.save()
 
         # 将相关的信息写入文件中查看分布式部署是否正常
-        with open('/home/yuzhou/scrapy_redis.txt', 'a') as f:
-            f.write('url:%s,title:%s\n' % (item['url'], item['title']))
+        # with open('/home/yuzhou/scrapy_redis.txt', 'a') as f:
+            # f.write('url:%s,title:%s\n' % (item['url'], item['title']))
 
         # 处理完后需要return这个item，让后面的pipeline进行处理
         return item

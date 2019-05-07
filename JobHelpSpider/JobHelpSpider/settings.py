@@ -69,6 +69,7 @@ SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 ITEM_PIPELINES = {
     'scrapy_redis.pipelines.RedisPipeline': 300,
+    'JobHelpSpider.pipelines.MysqlTwistPipeline': 250,
     'JobHelpSpider.pipelines.ElasticSearchPipeline': 200,
 }
 
