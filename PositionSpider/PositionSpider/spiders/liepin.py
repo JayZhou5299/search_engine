@@ -88,9 +88,9 @@ class LiepinSpider(RedisSpider):
 
         # 获取salary失败的直接return
         salary = response.css('.job-item-title::text').extract_first()
-        if not salary:
+        if not salary or '面议' in salary:
             salary = response.css('.job-main-title::text').extract_first()
-            if not salary:
+            if not salary or '面议' in salary:
                 return
 
         salary_list = re.findall(r'(\d*)-(\d*)万', salary)[0]
@@ -105,6 +105,11 @@ class LiepinSpider(RedisSpider):
         working_place = response.css('.basic-infor a::text').extract_first()
 
         other_message_list = response.css('.job-qualifications span::text').extract()
+        if not other_message_list:
+            other_message_list = response.css('.resume span::text').extract()
+            if not other_message_list:
+                return
+
         working_exp = other_message_list[1]
         education = other_message_list[0]
 
