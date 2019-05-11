@@ -46,7 +46,7 @@ class BossSpider(RedisSpider):
             for relative_url_obj in relative_url_list:
                 relative_url = re.sub(r'c(\d*)-', 'c100010000-', relative_url_obj)
                 job_classify = job_classify_list[relative_url_list.index(relative_url_obj)]
-                time.sleep(random.randint(2, 4))
+                time.sleep(random.randint(6, 10))
                 yield Request(url=parse.urljoin('https://www.zhipin.com', relative_url),
                               callback=self.parse_crawl_urls, meta={'job_classify': job_classify})
 
@@ -58,7 +58,7 @@ class BossSpider(RedisSpider):
         """
         crawl_urls = response.css('.info-primary a::attr(href)').extract()
         for crawl_url in crawl_urls:
-            time.sleep(random.randint(1, 3))
+            time.sleep(random.randint(6, 10))
             yield Request(url=parse.urljoin('http://www.zhipin.com/', crawl_url),
                           callback=self.parse_detail,
                           meta={'job_classify': response.meta['job_classify']})
@@ -69,7 +69,7 @@ class BossSpider(RedisSpider):
             return
 
         next_url = response.css('.next::attr(href)').extract_first()
-        time.sleep(random.randint(2, 4))
+        time.sleep(random.randint(6, 10))
         yield Request(url=parse.urljoin('http://www.zhipin.com/', next_url),
                       callback=self.parse_crawl_urls,
                       meta={'job_classify': response.meta['job_classify']})
