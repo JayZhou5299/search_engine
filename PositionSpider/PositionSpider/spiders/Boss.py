@@ -3,19 +3,31 @@ import scrapy
 import re
 import time
 import random
+import redis
 
 from scrapy import Request
 from urllib import parse
 from w3lib.html import remove_tags
+from scrapy_redis.spiders import RedisSpider
 
 from PositionSpider.items import PositionItem
+from PositionSpider import settings
 from PositionSpider.utils.common import get_md5
 
 
-class BossSpider(scrapy.Spider):
+class BossSpider(RedisSpider):
     name = 'Boss'
     allowed_domains = ['www.zhipin.com']
     start_urls = ['http://www.zhipin.com/']
+    redis_key = 'Boss:start_urls'
+
+    def __init__(self):
+        """
+        初始化向redis中添加start_urls
+        """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
+        # master端开启即可
+        # redis_cli.lpush(self.redis_key, 'http://www.zhipin.com/')
 
     def parse(self, response):
         """
