@@ -71,6 +71,10 @@ class MysqlTwistPipeline(object):
         :param item:
         :return:
         """
+        # 将相关的信息写入文件中查看分布式部署是否正常
+        with open('/home/yuzhou/test_scrapy_redis.txt', 'a') as f:
+            f.write('url:%s,title:%s\n' % (item['url'], item['title']))
+
         insert_sql = """
             replace into tb_job_wanted_information(url_object_id, content) values ('%s', '%s')
         """

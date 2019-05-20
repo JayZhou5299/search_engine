@@ -70,7 +70,7 @@ DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 ITEM_PIPELINES = {
     'scrapy_redis.pipelines.RedisPipeline': 300,
     'JobHelpSpider.pipelines.MysqlTwistPipeline': 250,
-    'JobHelpSpider.pipelines.ElasticSearchPipeline': 200,
+    # 'JobHelpSpider.pipelines.ElasticSearchPipeline': 200,
 }
 
 
@@ -97,7 +97,7 @@ ITEM_PIPELINES = {
 MYSQL_HOST = '60.205.224.136'
 MYSQL_USER = 'root'
 MYSQL_PASSWORD = '123456'
-MYSQL_DB = 'search_engine'
+MYSQL_DB = 'search_engine_test'
 
 # ES_ADDRESS = '60.205.224.136'
 ES_ADDRESS = '39.96.16.6'
