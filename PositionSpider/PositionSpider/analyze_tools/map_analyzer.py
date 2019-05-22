@@ -64,6 +64,7 @@ def classify_province():
 
     for data_obj in data_list:
         province_name = province_city_mapping.get(data_obj['working_place'].strip())
+        print(province_name)
 
         # 不能解析的省份写入，后续人为添加相关信息
         if province_name is None:
@@ -105,12 +106,13 @@ def handle_and_formate_map():
         # 返回值eg:<class 'list'>: [('后端开发', 47.0), ('HTML5', 40.0), ('包装设计', 25.0)]
         top_list = redis_cli.zrevrange(province_obj, 0, 2, True)
         top_str = ''
-        for top_obj in top_list:
-            top_str += '%s:%s\n' % (top_obj[0], top_obj[1])
+        if top_list:
+            for top_obj in top_list:
+                top_str += '%s:%s\\n' % (top_obj[0], top_obj[1])
+            # [: -2]是去掉最后一个换行符
+            top_str = top_str[: -2]
 
-        # [: -1]是去掉最后一个换行符
-        redis_cli.lpush('map_amount_list',
-                        json.dumps({province_obj: amount_province, 'top_str': top_str[: -1]}, ensure_ascii=False))
+        redis_cli.lpush('map_amount_list', '\t'.join([province_obj, str(amount_province), top_str]))
 
     redis_cli.set('map_min_amount', min_amount)
     redis_cli.set('map_max_amount', max_amount)
@@ -126,5 +128,5 @@ def entrance():
 
 
 if __name__ == '__main__':
-    handle_and_formate_map()
+    entrance()
 
