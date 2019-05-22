@@ -34,10 +34,10 @@
     </div>
     <div class="my-nav">
     	<ul class="nav nav-pills my-u">
-            <li data-type="article" role="presentation"><a href="#" onclick="add_search()">技术文章</a></li>
+            <li data-type="article" role="presentation"><a href="#">技术文章</a></li>
             <li class="active" data-type="video" role="presentation"><a href="#">学习视频</a></li>
             <li data-type="position" role="presentation"><a href="#">岗位信息</a></li>
-            <li data-type="job_help" role="presentation" onclick="add_search()"><a href="#">求职帮助</a></li>
+            <li data-type="job_help" role="presentation"><a href="#">求职帮助</a></li>
         </ul>
     </div>
 	<div id="bd" class="ue-clear">
@@ -48,6 +48,10 @@
                 	<span class="info">找到约&nbsp;<span class="totalResult">{{ total_nums }}</span>&nbsp;条结果，共约<span class="totalPage">{{ page_nums }}</span>页</span>
                 </p>
                 <div class="resultList">
+                    {% if all_hits|length == 0 %}
+                        <h4>非常抱歉，没有找到与<span style="color: red">"{{ key_words }}"</span>相关的内容。</h4>
+                        <br><br>
+                    {% else %}
                     {% for hit in all_hits %}
                     <div class="resultItem">
                             <div class="itemHead">
@@ -72,7 +76,7 @@
                                 </span>
                                 <span class="info">
                                     <label>推荐度：</label>
-                                    <span class="value">2017-04-23</span>
+                                    <span class="value">{{ hit.recommend_score }}</span>
                                 </span>
                                 <span class="info">
                                     <label>价格：</label>
@@ -81,32 +85,20 @@
                             </div>
                         </div>
                     {% endfor %}
+                {% endif %}
                 </div>
                 <!-- 分页 -->
                 <div class="my-pagination ue-clear"></div>
                 <!-- 相关搜索 -->
 
-                
-                
-            </div>
-            <div class="historyArea">
-            	<div class="hotSearch">
-                	<h6>热门搜索</h6>
-                    <ul class="historyList">
-                        {% for search_word in topn_search %}
-                            <li><a href="/search?q={{ search_word }}">{{ search_word }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="mySearch">
-                	<h6>我的搜索</h6>
-                    <ul class="historyList">
-
-                    </ul>
-                </div>
             </div>
         </div><!-- End of main -->
-    </div><!--End of bd-->
+        <div class="my-pie">
+            <h5>视频分类饼图</h5>
+            <div id="pie" style="width: 450px; height:400px;"></div>
+        </div><!--End of bd-->
+    </div>
+
 </div>
 
 <div id="foot">Copyright &copy;projectsedu.com 版权所有  E-mail:admin@projectsedu.com</div>
@@ -114,6 +106,61 @@
 <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/global.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/pagination.js' %}"></script>
+    <!-- 引入 echarts.js -->
+<script src="../static/js/echarts.min.js"></script>
+<script src="../static/js/echarts-wordcloud.js"></script>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('pie'));
+    var data_list = [];
+
+    {% for pie_obj in pie_list %}
+        data_list.push("{{ pie_obj }}");
+    {% endfor %}
+
+    var option = {
+        title : {
+            {#text: '某站点用户访问来源',#}
+            {#subtext: '纯属虚构',#}
+            x:'center'
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient: 'vertical',
+            left: '8%',
+            top: '63%',
+            data: data_list
+        },
+        series : [
+            {
+                name: '访问来源',
+                type: 'pie',
+                radius : '40%',
+                center: ['40%', '30%'],
+                data:[
+                    {% for key, value in pie_dict.items %}
+                        {value: {{ value }}, name: '{{ key }}'},
+                    {% endfor %}
+                ],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+
 <script type="text/javascript">
     var search_url = "{% url 'search' %}"
     var suggest_url = "{% url "suggest" %}"
@@ -182,7 +229,7 @@
 	});
 	function pageselectCallback(page_id, jq) {
 	    var page = parseInt(page_id) + 1
-		window.location.href=search_url+'?q='+key_words+'&s_type='+$(".my-u .active").attr('data-type')+'&p='+page
+		window.location.href=search_url+'?q='+key_words+'&s_type='+$(".active").attr('data-type')+'&p='+page
 	}
 	
 	setHeight();
@@ -240,7 +287,7 @@
             MapSearchArr();
         }
 
-        window.location.href=search_url+'?q='+val+"&s_type="+$(".searchItem.current").attr('data-type')
+        window.location.href=search_url+'?q='+val+"&s_type="+$(".active").attr('data-type')
 
     }
 

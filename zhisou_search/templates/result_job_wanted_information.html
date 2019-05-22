@@ -48,6 +48,10 @@
                 	<span class="info">找到约&nbsp;<span class="totalResult">{{ total_nums }}</span>&nbsp;条结果，共约<span class="totalPage">{{ page_nums }}</span>页</span>
                 </p>
                 <div class="resultList">
+                    {% if all_hits|length == 0 %}
+                        <h4>非常抱歉，没有找到与<span style="color: red">"{{ key_words }}"</span>相关的内容。</h4>
+                        <br><br>
+                    {% else %}
                     {% for hit in all_hits %}
                     <div class="resultItem">
                             <div class="itemHead">
@@ -73,6 +77,7 @@
                             </div>
                         </div>
                     {% endfor %}
+                {% endif %}
                 </div>
                 <!-- 分页 -->
                 <div class="my-pagination ue-clear"></div>
@@ -80,6 +85,10 @@
 
             </div>
         </div><!-- End of main -->
+        <div class="my-histogram">
+            <h5>热门企业话题度柱状图</h5>
+            <div id="histogram" style="width: 430px; height: 900px"></div>
+        </div>
     </div><!--End of bd-->
 </div>
 
@@ -88,9 +97,111 @@
 <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/global.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/pagination.js' %}"></script>
+    <!-- 引入 echarts.js -->
+<script src="../static/js/echarts.min.js"></script>
+<script src="../static/js/echarts-wordcloud.js"></script>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('histogram'));
+    var col_list = [];
+    var row_list = [];
+
+    {% for col_obj in col_list %}
+        col_list.push("{{ col_obj }}");
+    {% endfor %}
+
+    {% for row_obj in row_list %}
+        row_list.push("{{ row_obj }}");
+    {% endfor %}
+
+    var option = {
+        color: ['#3398DB'],
+        title: {
+            {#text: '各省数据合格率统计',#}
+            //textStyle: {
+            //    color: '#fff'
+            //}
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            },
+            formatter: "{b}:{c}"
+        },
+        /*legend: {
+            data: [date]
+        },*/
+        grid: {
+            left: '0%',
+            right: '4%',
+            bottom: '1%',
+            top: '7%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01],
+            min: 0,
+            max: {{ bar_chart_max }},
+            interval: {{ bar_chart_interval }},
+            axisLabel: {
+                formatter: '{value}',
+                textStyle: {
+                    //color: '#fff',
+                    fontWeight: '80'
+                }
+            }
+        },
+        yAxis: {
+            type: 'category',
+            {#data: ['湖北省', '湖南省', '河南省', '安徽省', '浙江省', '山东省', '广东省'],#}
+            data: col_list,
+            axisLabel: {
+                show: true,
+                interval: 0,
+                rotate: 0,
+                margin: 2,
+                inside: false,
+                textStyle: {
+                    //color: '#fff',
+                    fontWeight: '50'
+                }
+            }
+        },
+        series: [{
+            type: 'bar',
+            label: {
+                normal: {
+                    show: true,
+                    // formatter: '{c}',
+                    formatter: function(v) {
+                        var val = v.data;
+                        if (val == 0) {
+                            return '';
+                        }
+                        return val;
+                    },
+                    color: '#fff'
+                }
+            },
+            {#data: [22, 33, 44, 55, 66, 77, 88]#}
+            data: row_list
+        }]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+
 <script type="text/javascript">
     var search_url = "{% url 'search' %}"
     var suggest_url = "{% url "suggest" %}"
+
+    $('.my-u').on('click', 'li', function(){
+		$('.my-u li').removeClass('active');
+		$(this).addClass('active');
+	});
 
     function add_search(){
         val = $(".searchInput").val();
@@ -156,7 +267,7 @@
 	});
 	function pageselectCallback(page_id, jq) {
 	    var page = parseInt(page_id) + 1
-		window.location.href=search_url+'?q='+key_words+'&s_type='+$(".searchItem.current").attr('data-type')+'&p='+page
+		window.location.href=search_url+'?q='+key_words+'&s_type='+$(".active").attr('data-type')+'&p='+page
 	}
 	
 	setHeight();

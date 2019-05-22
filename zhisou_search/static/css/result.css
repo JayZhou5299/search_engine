@@ -106,10 +106,20 @@ html{*overflow:auto;}
 .historyArea .historyList li{margin-bottom:5px;}
 
 /*热门类别词云图*/
-.my-wordcloud{width: 200px;height: 1000px; float: right;margin-right: 40px}
+.my-wordcloud{width: 200px;height: 1000px; float: right;margin-right: 40px; margin-top: 20px}
+.my-wordcloud #word_cloud1{margin-top: 50px}
 
 /*职位地图*/
-.my-map{width: 200px;height: 1000px; float: right;margin-right: 40px}
+.my-map{width: 200px;height: 1000px; float: right;margin-right: 40px; margin-top: 20px}
+.my-map #map{margin-top: 50px}
+
+/*饼图*/
+.my-pie{float: right;margin-top: 20px;}
+.my-pie #pie{margin-top: 50px}
+
+/*柱状图*/
+.my-histogram{float: right; margin-top: 20px; margin-right: 6px; padding-right: 20px !important;}
+.my-histogram #histogram{margin-top: 10px;}
 
 
 

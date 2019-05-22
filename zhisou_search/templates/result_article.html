@@ -48,6 +48,10 @@
                 	<span class="info">找到约&nbsp;<span class="totalResult">{{ total_nums }}</span>&nbsp;条结果，共约<span class="totalPage">{{ page_nums }}</span>页</span>
                 </p>
                 <div class="resultList">
+                    {% if all_hits|length == 0 %}
+                        <h4>非常抱歉，没有找到与<span style="color: red">"{{ key_words }}"</span>相关的内容。</h4>
+                        <br><br>
+                    {% else %}
                     {% for hit in all_hits %}
                     <div class="resultItem">
                             <div class="itemHead">
@@ -85,6 +89,7 @@
                             </div>
                         </div>
                     {% endfor %}
+                {% endif %}
                 </div>
                 <!-- 分页 -->
                 <div class="my-pagination ue-clear"></div>
@@ -92,7 +97,7 @@
                 
             </div>
             <div class="my-wordcloud">
-                <h6>热门类别文章词云</h6>
+                <h5>热门类别文章词云</h5>
                 <div id="word_cloud1" style="width: 300px;height:200px;"></div>
                 <div id="word_cloud2" style="width: 300px;height:200px;"></div>
                 <div id="word_cloud3" style="width: 300px;height:200px;"></div>
@@ -102,12 +107,6 @@
             </div>
         </div><!-- End of main -->
     </div><!--End of bd-->
-    <div id="word_cloud1" style="width: 300px;height:200px;"></div>
-    <div id="word_cloud2" style="width: 300px;height:200px;"></div>
-    <div id="word_cloud3" style="width: 300px;height:200px;"></div>
-    <div id="word_cloud4" style="width: 300px;height:200px;"></div>
-    <div id="word_cloud5" style="width: 300px;height:200px;"></div>
-    <div id="word_cloud6" style="width: 300px;height:200px;"></div>
 </div>
 
 <div id="foot">Copyright &copy;projectsedu.com 版权所有  E-mail:admin@projectsedu.com</div>
@@ -231,7 +230,7 @@
 	});
 	function pageselectCallback(page_id, jq) {
 	    var page = parseInt(page_id) + 1
-		window.location.href=search_url+'?q='+key_words+'&s_type='+$(".searchItem.current").attr('data-type')+'&p='+page
+		window.location.href=search_url+'?q='+key_words+'&s_type='+$(".active").attr('data-type')+'&p='+page
 	}
 	
 	setHeight();
