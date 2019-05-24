@@ -72,11 +72,12 @@ class MysqlTwistPipeline(object):
         :return:
         """
         insert_sql = """
-            replace into tb_learning_video(url_object_id, learner_nums, evaluation_content)
-            values ('%s', %d, '%s')
+            replace into tb_learning_video(url_object_id, learner_nums, evaluation_content, classify)
+            values ('%s', %d, '%s', '%s')
         """
         final_sql = insert_sql % (item['url_object_id'], item['learner_nums'],
-                                  self.remove_other_tags(remove_tags(item['evaluation_content'])))
+                                  self.remove_other_tags(remove_tags(item['evaluation_content'])),
+                                  item['first_classify'])
         # print(final_sql)
         cursor.execute(final_sql)
 
