@@ -95,9 +95,9 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-MYSQL_HOST = '60.205.224.136'
+MYSQL_HOST = '182.92.193.60'
 MYSQL_USER = 'root'
-MYSQL_PASSWORD = '123456'
+MYSQL_PASSWORD = '(pwd:wyf)'
 MYSQL_DB = 'search_engine'
 
 # 由于jobbole中各个域名不同，所以需要进行配置
@@ -122,10 +122,10 @@ CHROMEDRIVER_PATH = '/home/yuzhou/software/chromedriver'
 ES_ADDRESS = '39.96.16.6'
 
 
-REDIS_ADDRESS = '60.205.224.136'
+REDIS_ADDRESS = '182.92.193.60'
 
 # slave端redis_url配置
-# REDIS_URL = 'redis://60.205.224.136:6379'
+# REDIS_URL = 'redis://182.92.193.60:6379'
 # master端redis配置
 # REDIS_HOST = 'localhost'
 # REDIS_PORT = 6379
