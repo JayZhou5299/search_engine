@@ -53,11 +53,15 @@ ROBOTSTXT_OBEY = False
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
+   #  设置ip代理，需要先将scrapy原先的ip代去掉
+   # 'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': None,
+
    # 'PositionSpider.middlewares.PositionspiderDownloaderMiddleware': 543,
 
     # 设置随机用户代理，必须先将scrapy原先的用户代理中间件去掉
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
-    'PositionSpider.middlewares.RandomUserAgentMiddleWare': 1
+    'PositionSpider.middlewares.RandomUserAgentMiddleWare': 1,
+    # 'PositionSpider.middlewares.RandomIpProxyMiddleWare': 10
 }
 
 # Enable or disable extensions
@@ -96,10 +100,28 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-MYSQL_HOST = '60.205.224.136'
+MYSQL_HOST = '182.92.193.60'
 MYSQL_USER = 'root'
-MYSQL_PASSWORD = '123456'
+MYSQL_PASSWORD = '(pwd:wyf)'
 MYSQL_DB = 'search_engine'
+
+
+# ip代理池
+# IP_PROXY_POOL = [
+#     'https://182.88.135.100:8123', 'http://171.43.13.41:9999', 'http://171.43.13.85:9999',
+#     'http://171.43.13.56:9999', 'http://171.43.13.68:9999', 'http://121.31.147.12:8123',
+#     'http://1.198.110.251:9999', 'http://61.142.72.154:30074', 'http://171.43.13.76:9999'
+# ]
+
+IP_PROXY_POOL = [
+    'https://112.85.149.12:9999', 'https://210.5.10.87:53281', 'https://14.20.235.185:808',
+    'https://171.41.81.253:9999', 'https://171.41.80.245:9999', 'https://171.41.81.144:9999'
+]
+
+# IP_PROXY_POOL = [
+#     'http://116.226.58.37:39443', 'http://112.85.170.47:9999', 'http://121.224.4.168:9999',
+#     'http://116.209.57.58:9999'
+# ]
 
 
 # 本地的chromedriver路径
@@ -110,10 +132,10 @@ CHROMEDRIVER_PATH = '/home/yuzhou/software/chromedriver'
 # ES_ADDRESS = '60.205.224.136'
 ES_ADDRESS = '39.96.16.6'
 
-REDIS_ADDRESS = '60.205.224.136'
+REDIS_ADDRESS = '182.92.193.60'
 
 # slave端redis_url配置
-# REDIS_URL = 'redis://60.205.224.136:6379'
+# REDIS_URL = 'redis://182.92.193.60:6379'
 # master端redis配置
 # REDIS_HOST = 'localhost'
 # REDIS_PORT = 6379

@@ -2,6 +2,7 @@
 import scrapy
 import re
 import time
+import redis
 import random
 
 from urllib import request
@@ -9,9 +10,12 @@ from http import cookiejar
 from scrapy import Request
 from urllib import parse
 from w3lib.html import remove_tags
+from scrapy_redis.spiders import RedisSpider
+
 
 from PositionSpider.items import PositionItem
 from PositionSpider.utils.common import get_md5
+from PositionSpider import settings
 
 """
 获取cookie信息
@@ -30,10 +34,11 @@ for item in cookie:
     cookie_str += '%s:%s;' % (item.name, item.value)
 
 
-class LagouSpider(scrapy.Spider):
+class LagouSpider(RedisSpider):
     name = 'lagou'
     allowed_domains = ['www.lagou.com']
-    start_urls = ['http://www.lagou.com/']
+    # start_urls = ['http://www.lagou.com/']
+    redis_key = 'lagou:start_urls'
 
     custom_settings = {
         "COOKIES_ENABLED": False,
@@ -50,6 +55,14 @@ class LagouSpider(scrapy.Spider):
             # 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
         }
     }
+
+    def __init__(self):
+        """
+        初始化向redis中添加start_urls
+        """
+        redis_cli = redis.Redis(host=settings.REDIS_ADDRESS, port=6379)
+        # master端开启即可
+        redis_cli.lpush(self.redis_key, 'http://www.lagou.com/')
 
     def parse(self, response):
         """
@@ -91,7 +104,7 @@ class LagouSpider(scrapy.Spider):
 
         # 最后一个元素是下一页的标签
         next_url = response.css('.page_no::attr(href)').extract()[-1]
-        time.sleep(random.randint(4, 7))
+        time.sleep(random.randint(5, 7))
         yield Request(url=next_url, callback=self.parse_crawl_urls,
                       meta={'job_classify': response.meta['job_classify']})
 

@@ -4,9 +4,13 @@
 #
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+import random
+
 
 from scrapy import signals
 from fake_useragent import UserAgent
+
+from PositionSpider import settings
 
 
 class PositionspiderSpiderMiddleware(object):
@@ -134,16 +138,14 @@ class RandomIpProxyMiddleWare(object):
         该方法通过cls(crawler)调用
         :param crawler:
         """
-        super(RandomUserAgentMiddleWare, self).__init__()
-        self.ua = UserAgent()
+        super(RandomIpProxyMiddleWare, self).__init__()
+        self.ip_pool = settings.IP_PROXY_POOL
 
     @classmethod
     def from_crawler(cls, crawler):
         return cls(crawler)
 
     def process_request(self, request, spider):
-        temp_ua = self.ua.random
-        print(temp_ua)
-        request.headers.setdefault('User-Agent', temp_ua)
-        # request.meta['proxy']
-
+        random_ip = random.choice(self.ip_pool)
+        print(random_ip)
+        request.meta['proxy'] = random_ip
