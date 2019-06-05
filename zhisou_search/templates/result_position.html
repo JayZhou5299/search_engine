@@ -59,11 +59,11 @@
                                 <span class="divsion">-</span>
                                 <span class="fileType">
                                     <span class="mylabel">福利：</span>
-                                    <span class="value">{{ hit.welfare }}</span>
+                                    <span class="value">{% autoescape off %}{{ hit.welfare }}{% endautoescape %}</span>
                                 </span>
                                 <span class="fileType">
                                     <span class="mylabel">公司：</span>
-                                    <span class="value">{{ hit.company_name}}</span>
+                                    <span class="value">{% autoescape off %}{{ hit.company_name}}{% endautoescape %}</span>
                                 </span>
 
                                 <span class="dependValue">
@@ -321,7 +321,7 @@
                             max: {{ map_max_amount }},
                             x: 'left',
                             y: 'bottom',
-                            color: ['#e0ffff', '#006edd'],
+                            color: ['#0066CC', '#0099CC'],
                             text:['高','低'],           // 文本，默认为数值文本
                             calculable : true
             },

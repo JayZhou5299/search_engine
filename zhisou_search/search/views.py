@@ -16,7 +16,7 @@ from zhisou_search import settings
 client = Elasticsearch(hosts=[settings.ES_ADDRESS])
 
 # 创建一个连接池并从中获取redis连接
-pool = redis.ConnectionPool(host='60.205.224.136', decode_responses=True)
+pool = redis.ConnectionPool(host='182.92.193.60', decode_responses=True)
 redis_cli = redis.Redis(connection_pool=pool)
 
 
@@ -150,6 +150,9 @@ class SearchView(View):
         :return:
         """
         search_type = request.GET.get('s_type', '')
+        keywords = request.GET.get('q', '')
+        if keywords == '':
+            return render(request, 'index.html')
         if search_type == 'job_help':
             res_dict = self.handle_job_wanted_information(request)
         elif search_type == 'video':
