@@ -37,7 +37,7 @@
                 <li data-type="article" role="presentation"><a href="#">技术文章</a></li>
                 <li data-type="video" role="presentation"><a href="#">学习视频</a></li>
                 <li data-type="position" role="presentation"><a href="#">岗位信息</a></li>
-                <li data-type="job_help" role="presentation" class="active"><a href="#">求职帮助</a></li>
+                <li class="active" data-type="job_help" role="presentation"><a href="#">求职帮助</a></li>
         </ul>
     </div>
 	<div id="bd" class="ue-clear">
@@ -207,11 +207,6 @@
         val = $(".searchInput").val();
         window.location.href=search_url+'?q='+val+"&s_type="+$(".active").attr('data-type')
     }
-
-    $('.my-u').on('click', 'li', function(){
-		$('.my-u li').removeClass('active');
-		$(this).addClass('active');
-	});
 
 	$('.searchList').on('click', '.searchItem', function(){
 		$('.searchList .searchItem').removeClass('current');
